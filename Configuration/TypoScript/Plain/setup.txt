@@ -98,7 +98,7 @@ tt_content_plain {
 
 	# Default
 	default = USER
-	default.userFunc = HDNET\Hdnet\Service\Renderer\PlainRenderer->render
+	default.userFunc = FRUIT\Ink\Service\PlainRenderer->render
 	default {
 		header.linkPrefix = Link:
 
