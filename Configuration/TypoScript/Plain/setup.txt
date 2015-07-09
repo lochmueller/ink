@@ -1,0 +1,162 @@
+tt_content_plain = CASE
+tt_content_plain.key.field = CType
+tt_content_plain {
+
+	# All content elements
+	stdWrap.noTrimWrap (
+|
+|
+
+|
+)
+
+	# Header
+	header = COA
+	header {
+		stdWrap {
+			fieldRequired = header
+			if {
+				equals.field = header_layout
+				value = 100
+				negate = 1
+			}
+		}
+
+		10 = CASE
+		10 {
+			key {
+				field = header_layout
+			}
+			stdWrap.noTrimWrap (
+|
+|
+|
+)
+			default =< tt_content_plain.div
+			default.strPad.padWith = =
+			2 =< tt_content_plain.div
+			2.strPad.padWith = =
+			2 =< tt_content_plain.div
+			2.strPad.padWith = *
+			3 =< tt_content_plain.div
+			3.strPad.padWith = -
+			4 =< tt_content_plain.div
+			4.strPad.padWith = ~
+			5 =< tt_content_plain.div
+			5.strPad.padWith =
+		}
+
+		20 = TEXT
+		20.field = date
+		20.strftime = %d.%m.%Y
+		20.noTrimWrap = |{LLL:EXT:cms/locallang_ttc.xlf:date}: ||
+		20.insertData = 1
+		20.if.isTrue.field = date
+
+		30 =< tt_content_plain.default
+		30.forceCType = header
+
+		40 =< tt_content_plain.header.10
+		40.5.strPad.padWith = .
+		40.stdWrap.noTrimWrap (
+|
+|
+
+|
+)
+	}
+
+	# Text
+	text = COA
+	text {
+		10 =< tt_content_plain.header
+		20 =< tt_content_plain.default
+	}
+
+	# Text & pic
+	textpic = COA
+	textpic {
+		10 =< tt_content_plain.header
+		20 =< tt_content_plain.default
+	}
+
+    # Menu
+	menu = COA
+	menu {
+		10 =< tt_content_plain.header
+		20 =< tt_content_plain.default
+	}
+
+	# Divider
+	div = TEXT
+	div.value =
+    div.strPad {
+      length = 76
+      padWith = #
+      type = both
+    }
+
+	# Default
+	default = USER
+	default.userFunc = HDNET\Hdnet\Service\Renderer\PlainRenderer->render
+	default {
+		header.linkPrefix = Link:
+
+		uploads.header = Downloads:
+
+		images.header = Bilder:
+		images.linkPrefix = Link:
+		images.captionHeader = Bildunterschrift:
+
+		bulletlist.0.bullet = |*  |
+		bulletlist.1.bullet = |#  |
+		bulletlist.2.bullet = | - |
+		bulletlist.3.bullet = |>  |
+		bulletlist.3.secondRow = |.  |
+		bulletlist.3.blanks = 1
+
+		menu =< tt_content.menu.20
+		shortcut =< tt_content.shortcut.20
+		shortcut.0.conf.tt_content =< tt_content_plain
+		shortcut.0.tables = tt_content
+
+		bodytext.doubleLF = 1
+		bodytext.stdWrap.parseFunc.tags {
+			link < styles.content.parseFunc.tags.link
+			#typolist = USER
+			#typolist.userFunc = tx_directmail_pi1->typolist
+			#typolist.siteUrl = http://www.google.de
+			#typolist.bulletlist =< tt_content_plain.bulletlist
+			#typohead = USER
+			#typohead.userFunc = tx_directmail_pi1->typohead
+			#typohead.siteUrl = http://www.google.de
+			#typohead.header =< plugin.tx_directmail_pi1.header
+			#typocode = USER
+			#typocode.userFunc = tx_directmail_pi1->typocode
+			#typocode.siteUrl = http://www.google.de
+		}
+	}
+}
+
+# Plain page
+plainPage >
+plainPage = PAGE
+plainPage {
+	typeNum=99
+	config {
+		disableAllHeaderCode = 1
+		additionalHeaders = Content-type:text/plain
+		absRefPrefix = http://t3m.local.de/
+		no_cache = 1
+		linkVars = L
+	}
+
+	10 = CONTENT
+	10 {
+		table = tt_content
+		select.orderBy = sorting
+		select.where = colPos=0
+		select.languageField = sys_language_uid
+		renderObj =< tt_content_plain
+	}
+}

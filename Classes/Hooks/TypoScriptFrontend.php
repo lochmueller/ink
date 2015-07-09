@@ -27,7 +27,7 @@ class TypoScriptFrontend {
 	 * @param TypoScriptFrontendController $obj
 	 */
 	public function endOfRendering(array $params, TypoScriptFrontendController $obj) {
-		if (!isset($obj->config['config']['newsletterPreparation'])) {
+		if (!isset($obj->config['config']['newsletterHtmlPreparation'])) {
 			return;
 		}
 		$obj->content = $this->removeGenerator($obj->content);
