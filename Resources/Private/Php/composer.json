@@ -1,0 +1,12 @@
+{
+    "name": "fruit/external",
+    "authors": [
+        {
+            "name": "Tim Lochmüller",
+            "email": "tim@fruit-lab.de"
+        }
+    ],
+    "require": {
+        "tijsverkoyen/css-to-inline-styles": "~1.5"
+    }
+}
