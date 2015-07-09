@@ -87,6 +87,27 @@ tt_content_plain {
 		20 =< tt_content_plain.default
 	}
 
+    # Bullets
+	bullets = COA
+	bullets {
+		10 =< tt_content_plain.header
+		20 = TEXT
+		20.trim = 1
+		20.field = bodytext
+		20.split {
+			1 {
+				current = 1
+				noTrimWrap = |- ||
+			}
+			2 {
+				current = 1
+				noTrimWrap = |~ ||
+			}
+			token.char = 10
+			cObjNum = |*|1|| 2|*|
+		}
+	}
+
 	# Divider
 	div = TEXT
 	div.value =
@@ -137,6 +158,12 @@ tt_content_plain {
 		}
 	}
 }
+[globalVar = GP:type = 99]
+config {
+	newsletterPlainPreparation = 1
+}
+[global]
+
 
 # Plain page
 plainPage >
@@ -146,9 +173,6 @@ plainPage {
 	config {
 		disableAllHeaderCode = 1
 		additionalHeaders = Content-type:text/plain
-		absRefPrefix = http://t3m.local.de/
-		no_cache = 1
-		linkVars = L
 	}
 
 	10 = CONTENT

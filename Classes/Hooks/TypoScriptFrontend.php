@@ -27,14 +27,33 @@ class TypoScriptFrontend {
 	 * @param TypoScriptFrontendController $obj
 	 */
 	public function endOfRendering(array $params, TypoScriptFrontendController $obj) {
-		if (!isset($obj->config['config']['newsletterHtmlPreparation'])) {
-			return;
+		if (isset($obj->config['config']['newsletterHtmlPreparation'])) {
+			$obj->content = $this->removeGenerator($obj->content);
+			$obj->content = $this->removeComments($obj->content);
+			$obj->content = $this->removeJavaScript($obj->content);
+			$obj->content = $this->inlineCss($obj->content);
+		} elseif (isset($obj->config['config']['newsletterPlainPreparation'])) {
+			$obj->content = trim($this->trimAllLines($obj->content));
+			$obj->content = $this->removeMultipleEmptyLines($obj->content);
 		}
-		$obj->content = $this->removeGenerator($obj->content);
-		$obj->content = $this->removeComments($obj->content);
-		$obj->content = $this->removeJavaScript($obj->content);
-		$obj->content = $this->inlineCss($obj->content);
+	}
 
+	/**
+	 * @param string $content
+	 *
+	 * @return string
+	 */
+	protected function trimAllLines($content) {
+		return implode("\n", GeneralUtility::trimExplode("\n", $content));
+	}
+
+	/**
+	 * @param string $content
+	 *
+	 * @return string
+	 */
+	protected function removeMultipleEmptyLines($content) {
+		return preg_replace('/\n{4,}/', "\n\n\n", $content);
 	}
 
 	/**

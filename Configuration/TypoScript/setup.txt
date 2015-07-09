@@ -1,14 +1,20 @@
 # Configuration
-
-
-# Default PAGE object:
-page = PAGE
-page.config {
+config {
+	xmlprologue = none
+	linkVars = L
+	absRefPrefix = {$ink.absRefPrefix}
+}
+[globalVar = GP:type = 0]||[globalVar = GP:type = ]
+config {
 	doctype = xhtml_11
 	newsletterHtmlPreparation = 1
 	htmlTag_setParams = xmlns="http://www.w3.org/1999/xhtml"
-	xmlprologue = none
 }
+[global]
+
+# Default PAGE object:
+page = PAGE
+page.typeNum = 0
 page.meta.viewport = width=width=device-width
 page.includeCSS.ink = typo3conf/ext/ink/Resources/Public/ink-1.0.5/ink.css
 

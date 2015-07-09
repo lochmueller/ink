@@ -1,0 +1,2 @@
+# Change to absolute URL for Newsletter Live systems
+ink.absRefPrefix = /
