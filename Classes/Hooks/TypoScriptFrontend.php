@@ -27,9 +27,26 @@ class TypoScriptFrontend {
 	 * @param TypoScriptFrontendController $obj
 	 */
 	public function endOfRendering(array $params, TypoScriptFrontendController $obj) {
+		if (!isset($obj->config['config']['newsletterPreparation'])) {
+			return;
+		}
+		$obj->content = $this->removeGenerator($obj->content);
 		$obj->content = $this->removeComments($obj->content);
 		$obj->content = $this->removeJavaScript($obj->content);
 		$obj->content = $this->inlineCss($obj->content);
+
+	}
+
+	/**
+	 * Remove generator meta tag
+	 * <meta name="generator" content="TYPO3 6.2 CMS">
+	 *
+	 * @param string $content
+	 *
+	 * @return string
+	 */
+	protected function removeGenerator($content) {
+		return preg_replace('/<meta name="?generator"?.+?>/is', '', $content);
 	}
 
 	/**

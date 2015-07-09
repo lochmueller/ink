@@ -1,0 +1,31 @@
+# Configuration
+config {
+	doctype = xhtml_11
+	newsletterPreparation = 1
+	htmlTag_setParams = xmlns="http://www.w3.org/1999/xhtml"
+	xmlprologue = none
+}
+
+# Default PAGE object:
+page = PAGE
+page.meta.viewport = width=width=device-width
+page.includeCSS.ink = typo3conf/ext/ink/Resources/Public/ink-1.0.5/ink.css
+
+page.10 = TEXT
+page.10.value (
+  <table class="body">
+     <tr>
+        <td class="center" align="center" valign="top">
+          <center>
+)
+
+page.20 < styles.content.get
+
+page.30 = TEXT
+page.30.value (
+  </center>
+  </td>
+</tr>
+</table>
+)
+
