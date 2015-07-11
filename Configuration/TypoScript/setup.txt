@@ -18,21 +18,30 @@ page.typeNum = 0
 page.meta.viewport = width=width=device-width
 page.includeCSS.ink = typo3conf/ext/ink/Resources/Public/ink-1.0.5/ink.css
 
-page.10 = TEXT
-page.10.value (
-  <table class="body">
-     <tr>
-        <td class="center" align="center" valign="top">
-          <center>
-)
+page.10 = FLUIDTEMPLATE
+page.10 {
+	file = EXT:ink/Resources/Private/Templates/Newsletter.html
+	variables {
+		# Content & sidebar
+		content < styles.content.get
+		sidebar < styles.content.getLeft
 
-page.20 < styles.content.get
+		# Legal information
+		legalInformation = RECORDS
+		legalInformation {
+			source = {$ink.legalInformationContentElements}
+			dontCheckPid = 1
+			tables = tt_content
+		}
 
-page.30 = TEXT
-page.30.value (
-  </center>
-  </td>
-</tr>
-</table>
-)
+		# Footer menu
+		menuFooter = HMENU
+		menuFooter {
+			special = directory
+			special.value = {$ink.footerMenuPid}
+			1 = TMENU
+			1.NO.allWrap = &nbsp;|&nbsp;&#124; |*| &nbsp;|&nbsp;&#124; |*| &nbsp;|&nbsp;
+		}
 
+	}
+}

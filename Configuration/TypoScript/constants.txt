@@ -1,2 +1,8 @@
 # Change to absolute URL for Newsletter Live systems
 ink.absRefPrefix = /
+
+# The PID of the footer menu
+ink.footerMenuPid = 118
+
+# The UID of the content Element (Text) with legal information
+ink.legalInformationContentElements = 626

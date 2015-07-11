@@ -1,0 +1,77 @@
+<table class="body">
+	<tr>
+		<td class="center" align="center" valign="top">
+			<center>
+
+				<table class="row header">
+					<tr>
+						<td class="center" align="center">
+							<center>
+
+								<table class="container">
+									<tr>
+										<td class="wrapper last">
+
+											<table class="twelve columns">
+												<tr>
+													<td class="six sub-columns">
+														<img src="http://placehold.it/200x50">
+													</td>
+													<td class="six sub-columns last" style="text-align:right; vertical-align:middle;">
+														<span class="template-label">SIDEBAR HERO</span>
+													</td>
+													<td class="expander"></td>
+												</tr>
+											</table>
+
+										</td>
+									</tr>
+								</table>
+
+							</center>
+						</td>
+					</tr>
+				</table>
+
+				<br>
+
+				<table class="container">
+					<tr>
+						<td>
+
+							<f:format.raw>{content}</f:format.raw>
+
+							<br>
+							<table class="row">
+								<tr>
+									<td class="wrapper last">
+
+										<f:if condition="{legalInformation}">
+											<f:format.raw>{legalInformation}</f:format.raw>
+											<br>
+											<br>
+										</f:if>
+
+										<f:if condition="{menuFooter}">
+											<table class="twelve columns">
+												<tr>
+													<td align="center">
+														<center>
+															<p style="text-align:center;"><f:format.raw>{menuFooter}</f:format.raw></p>
+														</center>
+													</td>
+													<td class="expander"></td>
+												</tr>
+											</table>
+										</f:if>
+
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</center>
+		</td>
+	</tr>
+</table>

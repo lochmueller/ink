@@ -49,16 +49,28 @@ tt_content_plain {
 		20 = TEXT
 		20.field = date
 		20.strftime = %d.%m.%Y
-		20.noTrimWrap = |{LLL:EXT:cms/locallang_ttc.xlf:date}: ||
+		20.noTrimWrap (
+|{LLL:EXT:cms/locallang_ttc.xlf:date}: |
+|
+)
 		20.insertData = 1
 		20.if.isTrue.field = date
 
 		30 =< tt_content_plain.default
 		30.forceCType = header
 
-		40 =< tt_content_plain.header.10
-		40.5.strPad.padWith = .
-		40.stdWrap.noTrimWrap (
+		40 = TEXT
+		40.typolink.parameter.field = header_link
+		40.typolink.returnLast = url
+		40.noTrimWrap (
+|
+Link: ||
+)
+		40.if.isTrue.field = header_link
+
+		50 =< tt_content_plain.header.10
+		50.5.strPad.padWith = .
+		50.stdWrap.noTrimWrap (
 |
 |
 
@@ -83,6 +95,13 @@ tt_content_plain {
     # Menu
 	menu = COA
 	menu {
+		10 =< tt_content_plain.header
+		20 =< tt_content_plain.default
+	}
+
+    # Table
+	table = COA
+	table {
 		10 =< tt_content_plain.header
 		20 =< tt_content_plain.default
 	}
@@ -183,4 +202,44 @@ plainPage {
 		select.languageField = sys_language_uid
 		renderObj =< tt_content_plain
 	}
+
+	# Legal information
+    20 = RECORDS
+    20 {
+        source = {$ink.legalInformationContentElements}
+        dontCheckPid = 1
+        tables = tt_content
+		conf.tt_content =< tt_content_plain
+    }
+
+	# Footer menu
+    30 = HMENU
+    30 {
+        special = directory
+        special.value = {$ink.footerMenuPid}
+			stdWrap.noTrimWrap (
+|Navigation:
+|
+|
+)
+        1 = TMENU
+        1.NO.doNotLinkIt = 1
+        1.NO.stdWrap.noTrimWrap = |* |: |
+        1.NO.stdWrap.append = TEXT
+		1.NO.stdWrap.append.stdWrap {
+			typolink.parameter.data = page:uid
+			typolink.additionalParams = &L=0 || &L=1 || &L=2
+			typolink.addQueryString = 1
+			typolink.addQueryString.exclude = L,id,cHash,no_cache
+			typolink.addQueryString.method = GET
+			typolink.useCacheHash = 0
+			typolink.no_cache = 0
+			typolink.returnLast = url
+			noTrimWrap (
+||
+|
+)
+		}
+
+    }
 }

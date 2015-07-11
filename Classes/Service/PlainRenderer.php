@@ -244,6 +244,74 @@ class PlainRenderer extends AbstractRenderer {
 	}
 
 	/**
+	 * Render a table
+	 *
+	 * @CType table
+	 *
+	 * @param array $lines
+	 *
+	 * @return array
+	 */
+	public function renderTable($lines = array()) {
+		$controller = GeneralUtility::makeInstance('TYPO3\\CMS\\CssStyledContent\\Controller\\CssStyledContentController');
+		$controller->cObj = $this->cObj;
+		$htmlTable = $controller->render_table();
+		$tableData = $this->parseHtmlTable($htmlTable);
+		$writer = new PlainTableWriter();
+		$lines[] = $writer->getTable($tableData);
+		return $lines;
+	}
+
+	protected function parseHtmlTable($html) {
+		$dom = new \DOMDocument();
+
+		//load the html
+		$html = $dom->loadHTML(utf8_decode($html));
+
+		//discard white space
+		$dom->preserveWhiteSpace = FALSE;
+
+		//the table by its tag name
+		$tables = $dom->getElementsByTagName('table');
+
+		//get all rows from the table
+		$rows = $tables->item(0)
+			->getElementsByTagName('tr');
+		// get each column by tag name
+		$cols = $rows->item(0)
+			->getElementsByTagName('th');
+		$row_headers = NULL;
+		foreach ($cols as $node) {
+			//print $node->nodeValue."\n";
+			$row_headers[] = $node->nodeValue;
+		}
+
+		$table = array();
+		//get all rows from the table
+		$rows = $tables->item(0)
+			->getElementsByTagName('tr');
+		foreach ($rows as $row) {
+			// get each column by tag name
+			$cols = $row->getElementsByTagName('td');
+			$row = array();
+			$i = 0;
+			foreach ($cols as $node) {
+				# code...
+				//print $node->nodeValue."\n";
+				if ($row_headers == NULL) {
+					$row[] = $node->nodeValue;
+				} else {
+					$row[$row_headers[$i]] = $node->nodeValue;
+				}
+				$i++;
+			}
+			$table[] = $row;
+		}
+
+		return $table;
+	}
+
+	/**
 	 * Render a header
 	 *
 	 * @CType header
@@ -251,48 +319,27 @@ class PlainRenderer extends AbstractRenderer {
 	 * @param array $lines
 	 *
 	 * @return array
+	 * @todo  move to TS
 	 */
 	public function renderHeader($lines = array()) {
-		$header = MailUtility::breakLinesForEmail(trim($this->cObj->data['header']));
-		$subHeader = MailUtility::breakLinesForEmail(trim($this->cObj->data['subheader']));
+		$headerWrap = MailUtility::breakLinesForEmail(trim($this->cObj->data['header']));
+		$subHeaderWrap = MailUtility::breakLinesForEmail(trim($this->cObj->data['subheader']));
 
 		// align
-
-		$header = GeneralUtility::trimExplode(LF, $header, TRUE);
-		$subHeader = GeneralUtility::trimExplode(LF, $subHeader, TRUE);
+		$header = array_merge(GeneralUtility::trimExplode(LF, $headerWrap, TRUE), GeneralUtility::trimExplode(LF, $subHeaderWrap, TRUE));
 		if ($this->cObj->data['header_position'] == 'right') {
 			foreach ($header as $key => $l) {
-				$header[$key] = str_pad(' ', (76 - strlen($l))) . $l;
-			}
-			foreach ($subHeader as $key => $l) {
-				$subHeader[$key] = str_pad(' ', (76 - strlen($l))) . $l;
+				$l = trim($l);
+				$header[$key] = '.' . str_pad(' ', (75 - strlen($l)), ' ', STR_PAD_LEFT) . $l;
 			}
 		} elseif ($this->cObj->data['header_position'] == 'center') {
 			foreach ($header as $key => $l) {
-				$header[$key] = str_pad(' ', floor((76 - strlen($l)) / 2)) . $l;
-			}
-			foreach ($subHeader as $key => $l) {
-				$subHeader[$key] = str_pad(' ', floor((76 - strlen($l)) / 2)) . $l;
+				$l = trim($l);
+				$header[$key] = '.' . str_pad(' ', floor((75 - strlen($l)) / 2), ' ', STR_PAD_LEFT) . $l;
 			}
 		}
-		$header = trim(implode(LF, $header), CRLF . TAB);
-		$subHeader = trim(implode(LF, $subHeader), CRLF . TAB);
-
-		$hConf = $this->conf['header.'];
-
-		if ($this->cObj->data['date']) {
-			$lines[] = ' ';
-			$lines[] = '';
-		}
-
+		$header = implode(LF, $header);
 		$lines[] = $header;
-		if ($this->cObj->data['header_link']) {
-			$lines[] = $hConf['linkPrefix'] . $this->getLink($this->cObj->data['header_link']);
-		}
-		if ($subHeader) {
-			$lines[] = $subHeader;
-		}
-
 		return $lines;
 	}
 
