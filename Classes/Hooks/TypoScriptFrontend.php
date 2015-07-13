@@ -1,20 +1,18 @@
 <?php
 /**
- * @todo    General file information
+ * Hook the TSFE output
  *
  * @author  Tim Lochmüller
  */
 
 namespace FRUIT\Ink\Hooks;
 
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use FRUIT\Ink\Service\Postprocessing\PostprocessingInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
- * @todo   General class information
+ * Hook the TSFE output
  *
  * @author Tim Lochmüller
  */
@@ -27,14 +25,23 @@ class TypoScriptFrontend {
 	 * @param TypoScriptFrontendController $obj
 	 */
 	public function endOfRendering(array $params, TypoScriptFrontendController $obj) {
+		$postprocessor = array();
 		if (isset($obj->config['config']['newsletterHtmlPreparation'])) {
+			// HTML
 			$obj->content = $this->removeGenerator($obj->content);
 			$obj->content = $this->removeComments($obj->content);
-			$obj->content = $this->removeJavaScript($obj->content);
-			$obj->content = $this->inlineCss($obj->content);
+			$postprocessor[] = 'FRUIT\Ink\\Service\\Postprocessing\\RemoveJavaScript';
+			$postprocessor[] = 'FRUIT\Ink\\Service\\Postprocessing\\InlineCss';
 		} elseif (isset($obj->config['config']['newsletterPlainPreparation'])) {
-			$obj->content = trim($this->trimAllLines($obj->content));
-			$obj->content = $this->removeMultipleEmptyLines($obj->content);
+			// TXT
+			$obj->content = rtrim($this->trimAllLines($obj->content));
+			$postprocessor[] = 'FRUIT\Ink\\Service\\Postprocessing\\RemoveMultipleEmptyLines';
+		}
+
+		foreach ($postprocessor as $pp) {
+			/** @var PostprocessingInterface $processor */
+			$processor = GeneralUtility::makeInstance($pp);
+			$obj->content = $processor->process($obj->content);
 		}
 	}
 
@@ -42,18 +49,10 @@ class TypoScriptFrontend {
 	 * @param string $content
 	 *
 	 * @return string
+	 * @todo move to separate class
 	 */
 	protected function trimAllLines($content) {
 		return implode("\n", GeneralUtility::trimExplode("\n", $content));
-	}
-
-	/**
-	 * @param string $content
-	 *
-	 * @return string
-	 */
-	protected function removeMultipleEmptyLines($content) {
-		return preg_replace('/\n{4,}/', "\n\n\n", $content);
 	}
 
 	/**
@@ -63,6 +62,7 @@ class TypoScriptFrontend {
 	 * @param string $content
 	 *
 	 * @return string
+	 * @todo move to separate class
 	 */
 	protected function removeGenerator($content) {
 		return preg_replace('/<meta name="?generator"?.+?>/is', '', $content);
@@ -72,56 +72,10 @@ class TypoScriptFrontend {
 	 * @param string $content
 	 *
 	 * @return string
-	 */
-	protected function removeJavaScript($content) {
-		return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $content);
-	}
-
-	/**
-	 * @param string $content
-	 *
-	 * @return string
+	 * @todo move to separate class
 	 */
 	protected function removeComments($content) {
 		return preg_replace('/<!--(.*?)-->/s', '', $content);
-	}
-
-	/**
-	 * @param $content
-	 *
-	 * @return string
-	 * @throws \TijsVerkoyen\CssToInlineStyles\Exception
-	 */
-	protected function inlineCss($content) {
-		GeneralUtility::requireOnce(ExtensionManagementUtility::extPath('ink', 'Resources/Private/Php/vendor/autoload.php'));
-		$pattern = '%<(link|style)(?=[^<>]*?(?:type="(text/css)"|>))(?=[^<>]*?(?:media="([^<>"]*)"|>))(?=[^<>]*?(?:href="(.*?)"|>))(?=[^<>]*(?:rel="([^<>"]*)"|>))(?:.*?</\1>|[^<>]*>)%si';
-		$matches = array();
-		$css = '';
-		preg_match_all($pattern, $content, $matches);
-		if (isset($matches[0])) {
-			foreach ($matches[0] as $key => $match) {
-				if ($matches[1][$key] === 'style') {
-					$css .= strip_tags($match);
-				} elseif (strpos($match, 'type="text/css"') !== FALSE) {
-
-					$file = preg_replace('/^(.+)\.(\d+)\.css$/', '$1.css', $matches[4][$key]);
-					$parts = parse_url($file);
-					if (isset($parts['query'])) {
-						unset($parts['query']);
-					}
-					if (!isset($parts['host'])) {
-						$parts['path'] = ltrim($parts['path'], '/');
-					}
-
-					$css .= GeneralUtility::getUrl(HttpUtility::buildUrl($parts));
-				} else {
-					continue;
-				}
-				$content = str_replace($match, '', $content);
-			}
-		}
-		$format = new CssToInlineStyles($content, $css);
-		return $format->convert();
 	}
 
 }

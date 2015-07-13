@@ -1,6 +1,6 @@
 <?php
 /**
- * @todo    General file information
+ * Plain table writer
  *
  * @author  Tim Lochmüller
  */
@@ -8,7 +8,7 @@
 namespace FRUIT\Ink\Service;
 
 /**
- * @todo   General class information
+ * Plain table writer
  *
  * @author Tim Lochmüller
  */
@@ -24,6 +24,11 @@ class PlainTableWriter {
 
 	const LINE_Y_CHAR = '|';
 
+	/**
+	 * @param $table
+	 *
+	 * @return string
+	 */
 	function getTable($table) {
 
 		$nl = "\n";
@@ -48,12 +53,23 @@ class PlainTableWriter {
 		return $out;
 	}
 
+	/**
+	 * @param $table
+	 *
+	 * @return array
+	 */
 	function columns_headers($table) {
 		return array_keys(reset($table));
 	}
 
+	/**
+	 * @param $table
+	 * @param $columns_headers
+	 *
+	 * @return array
+	 */
 	function columns_lengths($table, $columns_headers) {
-		$lengths = [];
+		$lengths = array();
 		foreach ($columns_headers as $header) {
 			$header_length = mb_strlen($header);
 			$max = $header_length;
@@ -74,6 +90,11 @@ class PlainTableWriter {
 		return $lengths;
 	}
 
+	/**
+	 * @param $columns_lengths
+	 *
+	 * @return string
+	 */
 	function row_seperator($columns_lengths) {
 		$row = '';
 		foreach ($columns_lengths as $column_length) {
@@ -84,6 +105,11 @@ class PlainTableWriter {
 		return $row;
 	}
 
+	/**
+	 * @param $columns_lengths
+	 *
+	 * @return string
+	 */
 	function row_spacer($columns_lengths) {
 		$row = '';
 		foreach ($columns_lengths as $column_length) {
@@ -94,6 +120,12 @@ class PlainTableWriter {
 		return $row;
 	}
 
+	/**
+	 * @param $columns_headers
+	 * @param $columns_lengths
+	 *
+	 * @return string
+	 */
 	function row_headers($columns_headers, $columns_lengths) {
 		$row = '';
 		foreach ($columns_headers as $header) {
@@ -104,6 +136,13 @@ class PlainTableWriter {
 		return $row;
 	}
 
+	/**
+	 * @param $row_cells
+	 * @param $columns_headers
+	 * @param $columns_lengths
+	 *
+	 * @return string
+	 */
 	function row_cells($row_cells, $columns_headers, $columns_lengths) {
 		$row = '';
 		foreach ($columns_headers as $header) {
