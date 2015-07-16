@@ -6,6 +6,7 @@
 
 namespace FRUIT\Ink;
 
+use FRUIT\Ink\Rendering\RenderingInterface;
 use FRUIT\Ink\Rendering\Table;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileRepository;
@@ -228,31 +229,43 @@ class PlainRenderer {
 			$CType = trim($this->conf['forceCType']);
 		}
 
-		if ($this->isRegistered($CType)) {
-			$func = $this->registeredCTypes[$CType];
-			#$lines[] = $CType;
-			$lines = $this->$func($lines);
-			/**
-			 * Check out direct_mail there are more different types
-			 *
-			 * case 'uploads':
-			 * $lines[] = $this->getHeader();
-			 * $lines[] = $this->renderUploads($this->cObj->data['media']);
-			 * break;
-			 * case 'shortcut':
-			 * $lines[] = $this->getShortcut();
-			 * break;
-			 * case 'bullets':
-			 * $lines[] = $this->getHeader();
-			 * $lines[] = $this->breakBulletlist(strip_tags($this->parseBody($this->cObj->data['bodytext'])));
-			 * break;
-			 * case 'table':
-			 * $lines[] = $this->getHeader();
-			 * $lines[] = $this->breakTable(strip_tags($this->parseBody($this->cObj->data['bodytext'])));
-			 * break;
-			 */
+		$renderer = array(
+			'html' => 'FRUIT\\Ink\\Rendering\\Html',
+		);
+
+		if (isset($renderer[$CType])) {
+			$className = $renderer[$CType];
+			/** @var RenderingInterface $renderObject */
+			$renderObject = new $className();
+			$lines = $renderObject->render($this->cObj);
 		} else {
-			$lines[] = 'CType: ' . $CType . ' have no rendering definitions';
+
+			if ($this->isRegistered($CType)) {
+				$func = $this->registeredCTypes[$CType];
+				#$lines[] = $CType;
+				$lines = $this->$func($lines);
+				/**
+				 * Check out direct_mail there are more different types
+				 *
+				 * case 'uploads':
+				 * $lines[] = $this->getHeader();
+				 * $lines[] = $this->renderUploads($this->cObj->data['media']);
+				 * break;
+				 * case 'shortcut':
+				 * $lines[] = $this->getShortcut();
+				 * break;
+				 * case 'bullets':
+				 * $lines[] = $this->getHeader();
+				 * $lines[] = $this->breakBulletlist(strip_tags($this->parseBody($this->cObj->data['bodytext'])));
+				 * break;
+				 * case 'table':
+				 * $lines[] = $this->getHeader();
+				 * $lines[] = $this->breakTable(strip_tags($this->parseBody($this->cObj->data['bodytext'])));
+				 * break;
+				 */
+			} else {
+				$lines[] = 'CType: ' . $CType . ' have no rendering definitions';
+			}
 		}
 		$content = implode(LF, $lines);
 		return trim($content, CRLF . TAB);
@@ -379,20 +392,6 @@ class PlainRenderer {
 
 		$lines[] = $this->renderImagesHelper($images_arr, !$this->cObj->data['image_zoom'] ? $this->cObj->data['image_link'] : '', $this->cObj->data['imagecaption']);
 
-		return $lines;
-	}
-
-	/**
-	 * Render a HTML Content Element
-	 *
-	 * @CType html
-	 *
-	 * @param array $lines
-	 *
-	 * @return array
-	 */
-	public function renderHtml($lines = array()) {
-		$lines[] = $this->breakContent(strip_tags($this->cObj->data['bodytext']));
 		return $lines;
 	}
 
