@@ -230,7 +230,8 @@ class PlainRenderer {
 		}
 
 		$renderer = array(
-			'html' => 'FRUIT\\Ink\\Rendering\\Html',
+			'html'   => 'FRUIT\\Ink\\Rendering\\Html',
+			'header' => 'FRUIT\\Ink\\Rendering\\Header',
 		);
 
 		if (isset($renderer[$CType])) {
@@ -244,25 +245,6 @@ class PlainRenderer {
 				$func = $this->registeredCTypes[$CType];
 				#$lines[] = $CType;
 				$lines = $this->$func($lines);
-				/**
-				 * Check out direct_mail there are more different types
-				 *
-				 * case 'uploads':
-				 * $lines[] = $this->getHeader();
-				 * $lines[] = $this->renderUploads($this->cObj->data['media']);
-				 * break;
-				 * case 'shortcut':
-				 * $lines[] = $this->getShortcut();
-				 * break;
-				 * case 'bullets':
-				 * $lines[] = $this->getHeader();
-				 * $lines[] = $this->breakBulletlist(strip_tags($this->parseBody($this->cObj->data['bodytext'])));
-				 * break;
-				 * case 'table':
-				 * $lines[] = $this->getHeader();
-				 * $lines[] = $this->breakTable(strip_tags($this->parseBody($this->cObj->data['bodytext'])));
-				 * break;
-				 */
 			} else {
 				$lines[] = 'CType: ' . $CType . ' have no rendering definitions';
 			}
@@ -296,38 +278,6 @@ class PlainRenderer {
 	public function renderTable($lines = array()) {
 		$tableRenderer = new Table();
 		return $tableRenderer->render($this->cObj);
-	}
-
-	/**
-	 * Render a header
-	 *
-	 * @CType header
-	 *
-	 * @param array $lines
-	 *
-	 * @return array
-	 * @todo  move to TS
-	 */
-	public function renderHeader($lines = array()) {
-		$headerWrap = MailUtility::breakLinesForEmail(trim($this->cObj->data['header']));
-		$subHeaderWrap = MailUtility::breakLinesForEmail(trim($this->cObj->data['subheader']));
-
-		// align
-		$header = array_merge(GeneralUtility::trimExplode(LF, $headerWrap, TRUE), GeneralUtility::trimExplode(LF, $subHeaderWrap, TRUE));
-		if ($this->cObj->data['header_position'] == 'right') {
-			foreach ($header as $key => $l) {
-				$l = trim($l);
-				$header[$key] = str_pad(' ', (76 - strlen($l)), ' ', STR_PAD_LEFT) . $l;
-			}
-		} elseif ($this->cObj->data['header_position'] == 'center') {
-			foreach ($header as $key => $l) {
-				$l = trim($l);
-				$header[$key] = str_pad(' ', floor((76 - strlen($l)) / 2), ' ', STR_PAD_LEFT) . $l;
-			}
-		}
-		$header = implode(LF, $header);
-		$lines[] = $header;
-		return $lines;
 	}
 
 	/**
