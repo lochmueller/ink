@@ -7,7 +7,7 @@
 
 namespace FRUIT\Ink\Hooks;
 
-use FRUIT\Ink\Service\Postprocessing\PostprocessingInterface;
+use FRUIT\Ink\Postprocessing\PostprocessingInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -28,14 +28,14 @@ class TypoScriptFrontend {
 		$postprocessor = array();
 		if (isset($obj->config['config']['newsletterHtmlPreparation'])) {
 			// HTML
-			$obj->content = $this->removeGenerator($obj->content);
-			$obj->content = $this->removeComments($obj->content);
-			$postprocessor[] = 'FRUIT\Ink\\Service\\Postprocessing\\RemoveJavaScript';
-			$postprocessor[] = 'FRUIT\Ink\\Service\\Postprocessing\\InlineCss';
+			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\RemoveGenerator';
+			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\RemoveHtmlComments';
+			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\RemoveJavaScript';
+			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\InlineCss';
 		} elseif (isset($obj->config['config']['newsletterPlainPreparation'])) {
 			// TXT
 			$obj->content = rtrim($this->trimAllLines($obj->content));
-			$postprocessor[] = 'FRUIT\Ink\\Service\\Postprocessing\\RemoveMultipleEmptyLines';
+			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\RemoveMultipleEmptyLines';
 		}
 
 		foreach ($postprocessor as $pp) {
@@ -53,29 +53,6 @@ class TypoScriptFrontend {
 	 */
 	protected function trimAllLines($content) {
 		return implode("\n", GeneralUtility::trimExplode("\n", $content));
-	}
-
-	/**
-	 * Remove generator meta tag
-	 * <meta name="generator" content="TYPO3 6.2 CMS">
-	 *
-	 * @param string $content
-	 *
-	 * @return string
-	 * @todo move to separate class
-	 */
-	protected function removeGenerator($content) {
-		return preg_replace('/<meta name="?generator"?.+?>/is', '', $content);
-	}
-
-	/**
-	 * @param string $content
-	 *
-	 * @return string
-	 * @todo move to separate class
-	 */
-	protected function removeComments($content) {
-		return preg_replace('/<!--(.*?)-->/s', '', $content);
 	}
 
 }

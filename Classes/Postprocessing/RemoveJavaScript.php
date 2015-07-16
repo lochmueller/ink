@@ -5,14 +5,14 @@
  * @author  Tim Lochmüller
  */
 
-namespace FRUIT\Ink\Service\Postprocessing;
+namespace FRUIT\Ink\Postprocessing;
 
 /**
  * @todo   General class information
  *
  * @author Tim Lochmüller
  */
-class RemoveMultipleEmptyLines implements PostprocessingInterface {
+class RemoveJavaScript implements PostprocessingInterface {
 
 	/**
 	 * @param string $content
@@ -20,6 +20,6 @@ class RemoveMultipleEmptyLines implements PostprocessingInterface {
 	 * @return string
 	 */
 	public function process($content) {
-		return preg_replace('/\n{4,}/', "\n\n\n", $content);
+		return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $content);
 	}
 }

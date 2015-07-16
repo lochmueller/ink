@@ -5,7 +5,7 @@
  * @author  Tim Lochmüller
  */
 
-namespace FRUIT\Ink\Service\Postprocessing;
+namespace FRUIT\Ink\Postprocessing;
 
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;

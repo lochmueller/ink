@@ -4,7 +4,7 @@
  *
  */
 
-namespace FRUIT\Ink\Service\Postprocessing;
+namespace FRUIT\Ink\Postprocessing;
 
 /**
  * Interface PostprocessingInterface
