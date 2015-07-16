@@ -21,6 +21,21 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class Table extends AbstractRendering {
 
 	/**
+	 * Table settings
+	 *
+	 * @var array
+	 */
+	protected $tableSettings = array(
+		'default' => array(
+			'join'   => '+',
+			'xChar'  => '-',
+			'yChar'  => '|',
+			'xSpace' => 1,
+			'ySpace' => 0,
+		)
+	);
+
+	/**
 	 * @param ContentObjectRenderer $contentObject
 	 *
 	 * @return array
@@ -83,16 +98,6 @@ class Table extends AbstractRendering {
 		return $table;
 	}
 
-	const SPACING_X = 1;
-
-	const SPACING_Y = 0;
-
-	const JOINT_CHAR = '+';
-
-	const LINE_X_CHAR = '-';
-
-	const LINE_Y_CHAR = '|';
-
 	/**
 	 * @param $table
 	 *
@@ -108,15 +113,15 @@ class Table extends AbstractRendering {
 		$row_headers = $this->row_headers($columns_headers, $columns_lengths);
 
 		$out = $row_separator . $nl;
-		$out .= str_repeat($row_spacer . $nl, self::SPACING_Y);
+		$out .= str_repeat($row_spacer . $nl, $this->tableSettings['default']['ySpace']);
 		$out .= $row_headers . $nl;
-		$out .= str_repeat($row_spacer . $nl, self::SPACING_Y);
+		$out .= str_repeat($row_spacer . $nl, $this->tableSettings['default']['ySpace']);
 		$out .= $row_separator . $nl;
-		$out .= str_repeat($row_spacer . $nl, self::SPACING_Y);
+		$out .= str_repeat($row_spacer . $nl, $this->tableSettings['default']['ySpace']);
 		foreach ($table as $row_cells) {
 			$row_cells = $this->row_cells($row_cells, $columns_headers, $columns_lengths);
 			$out .= $row_cells . $nl;
-			$out .= str_repeat($row_spacer . $nl, self::SPACING_Y);
+			$out .= str_repeat($row_spacer . $nl, $this->tableSettings['default']['ySpace']);
 		}
 		$out .= $row_separator . $nl;
 		return $out;
@@ -155,7 +160,6 @@ class Table extends AbstractRendering {
 
 			$lengths[$header] = $max;
 		}
-
 		return $lengths;
 	}
 
@@ -167,9 +171,9 @@ class Table extends AbstractRendering {
 	function row_seperator($columns_lengths) {
 		$row = '';
 		foreach ($columns_lengths as $column_length) {
-			$row .= self::JOINT_CHAR . str_repeat(self::LINE_X_CHAR, (self::SPACING_X * 2) + $column_length);
+			$row .= $this->tableSettings['default']['join'] . str_repeat($this->tableSettings['default']['xChar'], ($this->tableSettings['default']['xSpace'] * 2) + $column_length);
 		}
-		$row .= self::JOINT_CHAR;
+		$row .= $this->tableSettings['default']['join'];
 
 		return $row;
 	}
@@ -182,9 +186,9 @@ class Table extends AbstractRendering {
 	function row_spacer($columns_lengths) {
 		$row = '';
 		foreach ($columns_lengths as $column_length) {
-			$row .= self::LINE_Y_CHAR . str_repeat(' ', (self::SPACING_X * 2) + $column_length);
+			$row .= $this->tableSettings['default']['yChar'] . str_repeat(' ', ($this->tableSettings['default']['xSpace'] * 2) + $column_length);
 		}
-		$row .= self::LINE_Y_CHAR;
+		$row .= $this->tableSettings['default']['yChar'];
 
 		return $row;
 	}
@@ -198,9 +202,9 @@ class Table extends AbstractRendering {
 	function row_headers($columns_headers, $columns_lengths) {
 		$row = '';
 		foreach ($columns_headers as $header) {
-			$row .= self::LINE_Y_CHAR . str_pad($header, (self::SPACING_X * 2) + $columns_lengths[$header], ' ', STR_PAD_BOTH);
+			$row .= $this->tableSettings['default']['yChar'] . str_pad($header, ($this->tableSettings['default']['xSpace'] * 2) + $columns_lengths[$header], ' ', STR_PAD_BOTH);
 		}
-		$row .= self::LINE_Y_CHAR;
+		$row .= $this->tableSettings['default']['yChar'];
 
 		return $row;
 	}
@@ -215,9 +219,9 @@ class Table extends AbstractRendering {
 	function row_cells($row_cells, $columns_headers, $columns_lengths) {
 		$row = '';
 		foreach ($columns_headers as $header) {
-			$row .= self::LINE_Y_CHAR . str_repeat(' ', self::SPACING_X) . str_pad($row_cells[$header], self::SPACING_X + $columns_lengths[$header], ' ', STR_PAD_RIGHT);
+			$row .= $this->tableSettings['default']['yChar'] . str_repeat(' ', $this->tableSettings['default']['xSpace']) . str_pad($row_cells[$header], $this->tableSettings['default']['xSpace'] + $columns_lengths[$header], ' ', STR_PAD_RIGHT);
 		}
-		$row .= self::LINE_Y_CHAR;
+		$row .= $this->tableSettings['default']['yChar'];
 
 		return $row;
 	}
