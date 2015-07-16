@@ -25,34 +25,15 @@ class TypoScriptFrontend {
 	 * @param TypoScriptFrontendController $obj
 	 */
 	public function endOfRendering(array $params, TypoScriptFrontendController $obj) {
-		$postprocessor = array();
-		if (isset($obj->config['config']['newsletterHtmlPreparation'])) {
-			// HTML
-			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\RemoveGenerator';
-			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\RemoveHtmlComments';
-			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\RemoveJavaScript';
-			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\InlineCss';
-		} elseif (isset($obj->config['config']['newsletterPlainPreparation'])) {
-			// TXT
-			$obj->content = rtrim($this->trimAllLines($obj->content));
-			$postprocessor[] = 'FRUIT\Ink\\Postprocessing\\RemoveMultipleEmptyLines';
+		if (!isset($obj->config['config']['newsletterPostprocessing.']) || !is_array($obj->config['config']['newsletterPostprocessing.'])) {
+			return;
 		}
 
-		foreach ($postprocessor as $pp) {
+		foreach ($obj->config['config']['newsletterPostprocessing.'] as $postprocessorClass) {
 			/** @var PostprocessingInterface $processor */
-			$processor = GeneralUtility::makeInstance($pp);
+			$processor = GeneralUtility::makeInstance($postprocessorClass);
 			$obj->content = $processor->process($obj->content);
 		}
-	}
-
-	/**
-	 * @param string $content
-	 *
-	 * @return string
-	 * @todo move to separate class
-	 */
-	protected function trimAllLines($content) {
-		return implode("\n", GeneralUtility::trimExplode("\n", $content));
 	}
 
 }

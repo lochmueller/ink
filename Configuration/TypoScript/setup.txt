@@ -7,7 +7,12 @@ config {
 [globalVar = GP:type = 0]||[globalVar = GP:type = ]
 config {
 	doctype = xhtml_11
-	newsletterHtmlPreparation = 1
+	newsletterPostprocessing {
+		10 = FRUIT\Ink\Postprocessing\RemoveGenerator
+		20 = FRUIT\Ink\Postprocessing\RemoveHtmlComments
+		30 = FRUIT\Ink\Postprocessing\RemoveJavaScript
+		40 = FRUIT\Ink\Postprocessing\InlineCss
+	}
 	htmlTag_setParams = xmlns="http://www.w3.org/1999/xhtml"
 }
 [global]

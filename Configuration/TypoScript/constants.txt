@@ -1,8 +1,8 @@
-# Change to absolute URL for Newsletter Live systems
+# cat=ink; type=string; label=Absolute path prefix
 ink.absRefPrefix = /
 
-# The PID of the footer menu
+# cat=ink; type=int+; label=PID for the footer menu
 ink.footerMenuPid = 118
 
-# The UID of the content Element (Text) with legal information
+# cat=ink; type=string; label=UIDs of the content element for the legal information content elements (CSV)
 ink.legalInformationContentElements = 626

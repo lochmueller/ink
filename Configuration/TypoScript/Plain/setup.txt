@@ -179,7 +179,9 @@ Link: ||
 }
 [globalVar = GP:type = 99]
 config {
-	newsletterPlainPreparation = 1
+	newsletterPostprocessing {
+		10 = FRUIT\Ink\Postprocessing\RemoveMultipleEmptyLines
+	}
 }
 [global]
 

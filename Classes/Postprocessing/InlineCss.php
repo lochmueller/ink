@@ -17,7 +17,7 @@ use TYPO3\CMS\Core\Utility\HttpUtility;
  *
  * @author Tim Lochmüller
  */
-class InlineCsss implements PostprocessingInterface {
+class InlineCss implements PostprocessingInterface {
 
 	/**
 	 * @param string $content
