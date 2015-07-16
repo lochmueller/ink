@@ -1,18 +1,87 @@
 <?php
 /**
- * Plain table writer
+ * @todo    General file information
  *
+ * @package ...
  * @author  Tim Lochmüller
  */
 
-namespace FRUIT\Ink\Service;
-
 /**
- * Plain table writer
+ * @todo   General class information
  *
  * @author Tim Lochmüller
  */
-class PlainTableWriter {
+
+namespace FRUIT\Ink\Rendering;
+
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+
+class Table extends AbstractRendering {
+
+	/**
+	 * @param ContentObjectRenderer $contentObject
+	 *
+	 * @return array
+	 */
+	public function render($contentObject) {
+		$controller = GeneralUtility::makeInstance('TYPO3\\CMS\\CssStyledContent\\Controller\\CssStyledContentController');
+		$controller->cObj = $contentObject;
+		$htmlTable = $controller->render_table();
+		$tableData = $this->parseHtmlTable($htmlTable);
+		$lines[] = $this->getTable($tableData);
+		return $lines;
+	}
+
+	protected function parseHtmlTable($html) {
+		$dom = new \DOMDocument();
+
+		//load the html
+		$html = $dom->loadHTML(utf8_decode($html));
+
+		//discard white space
+		$dom->preserveWhiteSpace = FALSE;
+
+		//the table by its tag name
+		$tables = $dom->getElementsByTagName('table');
+
+		//get all rows from the table
+		$rows = $tables->item(0)
+			->getElementsByTagName('tr');
+		// get each column by tag name
+		$cols = $rows->item(0)
+			->getElementsByTagName('th');
+		$row_headers = NULL;
+		foreach ($cols as $node) {
+			//print $node->nodeValue."\n";
+			$row_headers[] = $node->nodeValue;
+		}
+
+		$table = array();
+		//get all rows from the table
+		$rows = $tables->item(0)
+			->getElementsByTagName('tr');
+		foreach ($rows as $row) {
+			// get each column by tag name
+			$cols = $row->getElementsByTagName('td');
+			$row = array();
+			$i = 0;
+			foreach ($cols as $node) {
+				# code...
+				//print $node->nodeValue."\n";
+				if ($row_headers == NULL) {
+					$row[] = $node->nodeValue;
+				} else {
+					$row[$row_headers[$i]] = $node->nodeValue;
+				}
+				$i++;
+			}
+			$table[] = $row;
+		}
+
+		return $table;
+	}
 
 	const SPACING_X = 1;
 
@@ -152,5 +221,4 @@ class PlainTableWriter {
 
 		return $row;
 	}
-
 }

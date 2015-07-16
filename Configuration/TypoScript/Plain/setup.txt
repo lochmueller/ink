@@ -138,7 +138,7 @@ Link: ||
 
 	# Default
 	default = USER
-	default.userFunc = FRUIT\Ink\Service\PlainRenderer->render
+	default.userFunc = FRUIT\Ink\PlainRenderer->render
 	default {
 		header.linkPrefix = Link:
 

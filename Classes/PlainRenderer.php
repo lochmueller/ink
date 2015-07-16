@@ -4,8 +4,9 @@
  * PlainText Service
  */
 
-namespace FRUIT\Ink\Service;
+namespace FRUIT\Ink;
 
+use FRUIT\Ink\Rendering\Table;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -13,11 +14,69 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Reflection\MethodReflection;
 
 /**
  *  PlainText Service
  */
-class PlainRenderer extends AbstractRenderer {
+class PlainRenderer {
+
+	/**
+	 * The content object
+	 *
+	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+	 */
+	public $cObj;
+
+	/**
+	 * Configuration
+	 *
+	 * @var
+	 */
+	protected $conf;
+
+	/**
+	 * Registerd cTypes
+	 *
+	 * @var array
+	 */
+	protected $registeredCTypes = array();
+
+	/**
+	 * Build up the object
+	 */
+	function __construct() {
+		$this->registerCType();
+	}
+
+	/**
+	 * Register a CType
+	 */
+	protected function registerCType() {
+		/** @var $classReflection \TYPO3\CMS\Extbase\Reflection\ClassReflection */
+		$classReflection = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Reflection\\ClassReflection', get_class($this));
+		$aMethods = $classReflection->getMethods();
+
+		foreach ($aMethods as $method) {
+			/** @var MethodReflection $method */
+			if ($method->isTaggedWith('CType')) {
+				$cType = implode('', $method->getTagValues('CType'));
+				$methodName = $method->getName();
+				$this->registeredCTypes[$cType] = $methodName;
+			}
+		}
+	}
+
+	/**
+	 * Check if a cType is registered
+	 *
+	 * @param string $cType
+	 *
+	 * @return boolean
+	 */
+	public function isRegistered($cType) {
+		return isset($this->registeredCTypes[$cType]);
+	}
 
 	/**
 	 * Function used to wrap the bodytext field content (or image caption) into lines of a max length of
@@ -112,37 +171,6 @@ class PlainRenderer extends AbstractRenderer {
 		}
 
 		return chr(10) . implode(chr(10), $lines);
-	}
-
-	/**
-	 * Parsing the bodytext field content, removing typical entities and <br /> tags.
-	 *
-	 * @param    string $str     : Field content from "bodytext" or other text field
-	 * @param    string $altConf : Altername conf name (especially when bodyext field in other table then tt_content)
-	 *
-	 * @return    string        Processed content
-	 */
-	function parseBody($str, $altConf = 'bodytext') {
-		if ($this->conf[$altConf . '.']['doubleLF']) {
-			$str = preg_replace("/\n/", "\n\n", $str);
-		}
-		// Regular parsing:
-		$str = preg_replace('/<br\s*\/?>/i', chr(10), $str);
-		$str = $this->cObj->stdWrap($str, $this->conf[$altConf . '.']['stdWrap.']);
-
-		// Then all a-tags:
-		$aConf = array();
-		$aConf['parseFunc.']['tags.']['a'] = 'USER';
-		$aConf['parseFunc.']['tags.']['a.']['userFunc'] = 'tx_directmail_pi1->atag_to_http';
-		$aConf['parseFunc.']['tags.']['a.']['siteUrl'] = 'http://www.google.de';
-		$str = $this->cObj->stdWrap($str, $aConf);
-		$str = str_replace('&nbsp;', ' ', htmlspecialchars_decode($str));
-
-		if ($this->conf[$altConf . '.']['header']) {
-			$str = $this->conf[$altConf . '.']['header'] . LF . $str;
-		}
-
-		return chr(10) . $str;
 	}
 
 	/**
@@ -253,62 +281,8 @@ class PlainRenderer extends AbstractRenderer {
 	 * @return array
 	 */
 	public function renderTable($lines = array()) {
-		$controller = GeneralUtility::makeInstance('TYPO3\\CMS\\CssStyledContent\\Controller\\CssStyledContentController');
-		$controller->cObj = $this->cObj;
-		$htmlTable = $controller->render_table();
-		$tableData = $this->parseHtmlTable($htmlTable);
-		$writer = new PlainTableWriter();
-		$lines[] = $writer->getTable($tableData);
-		return $lines;
-	}
-
-	protected function parseHtmlTable($html) {
-		$dom = new \DOMDocument();
-
-		//load the html
-		$html = $dom->loadHTML(utf8_decode($html));
-
-		//discard white space
-		$dom->preserveWhiteSpace = FALSE;
-
-		//the table by its tag name
-		$tables = $dom->getElementsByTagName('table');
-
-		//get all rows from the table
-		$rows = $tables->item(0)
-			->getElementsByTagName('tr');
-		// get each column by tag name
-		$cols = $rows->item(0)
-			->getElementsByTagName('th');
-		$row_headers = NULL;
-		foreach ($cols as $node) {
-			//print $node->nodeValue."\n";
-			$row_headers[] = $node->nodeValue;
-		}
-
-		$table = array();
-		//get all rows from the table
-		$rows = $tables->item(0)
-			->getElementsByTagName('tr');
-		foreach ($rows as $row) {
-			// get each column by tag name
-			$cols = $row->getElementsByTagName('td');
-			$row = array();
-			$i = 0;
-			foreach ($cols as $node) {
-				# code...
-				//print $node->nodeValue."\n";
-				if ($row_headers == NULL) {
-					$row[] = $node->nodeValue;
-				} else {
-					$row[$row_headers[$i]] = $node->nodeValue;
-				}
-				$i++;
-			}
-			$table[] = $row;
-		}
-
-		return $table;
+		$tableRenderer = new Table();
+		return $tableRenderer->render($this->cObj);
 	}
 
 	/**
@@ -491,5 +465,36 @@ class PlainRenderer extends AbstractRenderer {
 
 		$lines[] = $myContent;
 		return $lines;
+	}
+
+	/**
+	 * Parsing the bodytext field content, removing typical entities and <br /> tags.
+	 *
+	 * @param    string $str     : Field content from "bodytext" or other text field
+	 * @param    string $altConf : Altername conf name (especially when bodyext field in other table then tt_content)
+	 *
+	 * @return    string        Processed content
+	 */
+	function parseBody($str, $altConf = 'bodytext') {
+		if ($this->conf[$altConf . '.']['doubleLF']) {
+			$str = preg_replace("/\n/", "\n\n", $str);
+		}
+		// Regular parsing:
+		$str = preg_replace('/<br\s*\/?>/i', chr(10), $str);
+		$str = $this->cObj->stdWrap($str, $this->conf[$altConf . '.']['stdWrap.']);
+
+		// Then all a-tags:
+		$aConf = array();
+		$aConf['parseFunc.']['tags.']['a'] = 'USER';
+		$aConf['parseFunc.']['tags.']['a.']['userFunc'] = 'tx_directmail_pi1->atag_to_http';
+		$aConf['parseFunc.']['tags.']['a.']['siteUrl'] = 'http://www.google.de';
+		$str = $this->cObj->stdWrap($str, $aConf);
+		$str = str_replace('&nbsp;', ' ', htmlspecialchars_decode($str));
+
+		if ($this->conf[$altConf . '.']['header']) {
+			$str = $this->conf[$altConf . '.']['header'] . LF . $str;
+		}
+
+		return chr(10) . $str;
 	}
 }
