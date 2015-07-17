@@ -2,7 +2,7 @@
 ink.absRefPrefix = /
 
 # cat=ink; type=int+; label=PID for the footer menu
-ink.footerMenuPid = 118
+ink.footerMenuPid = 0
 
 # cat=ink; type=string; label=UIDs of the content element for the legal information content elements (CSV)
-ink.legalInformationContentElements = 626
+ink.legalInformationContentElements = 0

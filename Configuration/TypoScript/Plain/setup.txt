@@ -163,17 +163,6 @@ Link: ||
 		bodytext.doubleLF = 1
 		bodytext.stdWrap.parseFunc.tags {
 			link < styles.content.parseFunc.tags.link
-			#typolist = USER
-			#typolist.userFunc = tx_directmail_pi1->typolist
-			#typolist.siteUrl = http://www.google.de
-			#typolist.bulletlist =< tt_content_plain.bulletlist
-			#typohead = USER
-			#typohead.userFunc = tx_directmail_pi1->typohead
-			#typohead.siteUrl = http://www.google.de
-			#typohead.header =< plugin.tx_directmail_pi1.header
-			#typocode = USER
-			#typocode.userFunc = tx_directmail_pi1->typocode
-			#typocode.siteUrl = http://www.google.de
 		}
 	}
 }

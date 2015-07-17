@@ -1,7 +1,8 @@
 # Configuration
 config {
 	xmlprologue = none
-	linkVars = L
+	linkVars =
+	spamProtectEmailAddresses = 0
 	absRefPrefix = {$ink.absRefPrefix}
 }
 [globalVar = GP:type = 0]||[globalVar = GP:type = ]

@@ -435,7 +435,8 @@ class PlainRenderer {
 		// Then all a-tags:
 		$aConf = array();
 		$aConf['parseFunc.']['tags.']['a'] = 'USER';
-		$aConf['parseFunc.']['tags.']['a.']['userFunc'] = 'tx_directmail_pi1->atag_to_http';
+		// check direct mail usage @todo
+		$aConf['parseFunc.']['tags.']['a.']['userFunc'] = 'FRUIT\\Ink\\PlainRenderer->atag_to_http';
 		$aConf['parseFunc.']['tags.']['a.']['siteUrl'] = 'http://www.google.de';
 		$str = $this->cObj->stdWrap($str, $aConf);
 		$str = str_replace('&nbsp;', ' ', htmlspecialchars_decode($str));
@@ -445,5 +446,25 @@ class PlainRenderer {
 		}
 
 		return chr(10) . $str;
+	}
+
+	/**
+	 * Function used by TypoScript "parseFunc" to process links in the bodytext.
+	 * Extracts the link and shows it in plain text in a parathesis next to the link text. If link was relative the site URL was prepended.
+	 *
+	 * @param    string $content : Empty, ignore.
+	 * @param    array  $conf    : TypoScript parameters
+	 *
+	 * @return    string        Processed output.
+	 * @see parseBody()
+	 */
+	function atag_to_http($content, $conf) {
+		$this->conf = $conf;
+		$this->siteUrl = $conf['siteUrl'];
+		$theLink = trim($this->cObj->parameters['href']);
+		if (strtolower(substr($theLink, 0, 7)) == 'mailto:') {
+			$theLink = substr($theLink, 7);
+		}
+		return $this->cObj->getCurrentVal() . ' ( ' . $theLink . ' )';
 	}
 }
