@@ -1,22 +1,17 @@
 <?php
 /**
- * @todo    General file information
+ * Abstract rendering helper
  *
- * @package ...
  * @author  Tim Lochmüller
- */
-
-/**
- * @todo   General class information
- *
- * @author Tim Lochmüller
  */
 
 namespace FRUIT\Ink\Rendering;
 
-
 use TYPO3\CMS\Core\Utility\MailUtility;
 
+/**
+ * Abstract rendering helper
+ */
 abstract class AbstractRendering implements RenderingInterface {
 
 	/**

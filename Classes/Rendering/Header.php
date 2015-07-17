@@ -1,8 +1,7 @@
 <?php
 /**
- * @todo    General file information
+ * Render the header
  *
- * @package ...
  * @author  Tim Lochmüller
  */
 
@@ -13,9 +12,7 @@ use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
- * @todo   General class information
- *
- * @author Tim Lochmüller
+ * Render the header
  */
 class Header extends AbstractRendering {
 

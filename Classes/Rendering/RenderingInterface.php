@@ -1,8 +1,7 @@
 <?php
 /**
- * @todo    General file information
+ * Rendering interface
  *
- * @package ...
  * @author  Tim Lochmüller
  */
 
@@ -11,9 +10,7 @@ namespace FRUIT\Ink\Rendering;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
- * @todo   General class information
- *
- * @author Tim Lochmüller
+ * Rendering interface
  */
 interface RenderingInterface {
 

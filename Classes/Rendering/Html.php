@@ -1,24 +1,22 @@
 <?php
 /**
- * @todo    General file information
+ * Render the HTML element
  *
- * @package ...
  * @author  Tim Lochmüller
  */
 
 namespace FRUIT\Ink\Rendering;
 
-
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
- * @todo   General class information
- *
- * @author Tim Lochmüller
+ * Render the HTML element
  */
 class Html extends AbstractRendering {
 
 	/**
+	 * Get the liens for the current HTML element
+	 *
 	 * @param ContentObjectRenderer $contentObject
 	 *
 	 * @return array
