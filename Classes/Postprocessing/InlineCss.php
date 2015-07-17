@@ -11,6 +11,7 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Inliner for CSS
@@ -45,7 +46,14 @@ class InlineCss implements PostprocessingInterface {
 						$parts['path'] = ltrim($parts['path'], '/');
 					}
 
-					$css .= GeneralUtility::getUrl(HttpUtility::buildUrl($parts));
+					if($parts['host'] === GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY')) {
+						unset($parts['scheme']);
+						unset($parts['host']);
+						$parts['path'] = ltrim($parts['path'], '/');
+					}
+
+					$file = HttpUtility::buildUrl($parts);
+					$css .= GeneralUtility::getUrl($file);
 				} else {
 					continue;
 				}
