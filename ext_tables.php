@@ -1,8 +1,7 @@
 <?php
 /**
- * General ext_tables file and also an example for your own extension
+ * General ext_tables file
  *
- * @category Extension
  * @author   Tim Lochmüller
  */
 

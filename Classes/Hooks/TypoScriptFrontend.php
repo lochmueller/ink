@@ -13,12 +13,12 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Hook the TSFE output
- *
- * @author Tim Lochmüller
  */
 class TypoScriptFrontend {
 
 	/**
+	 * Call the end of rendering hook
+	 *
 	 * @hook TYPO3_CONF_VARS|SC_OPTIONS|tslib/class.tslib_fe.php|hook_eofe
 	 *
 	 * @param array                        $params

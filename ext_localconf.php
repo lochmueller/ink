@@ -1,8 +1,7 @@
 <?php
 /**
- * General ext_localconf file and also an example for your own extension
+ * General ext_localconf file
  *
- * @category Extension
  * @author   Tim Lochmüller
  */
 

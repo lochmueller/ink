@@ -1,6 +1,6 @@
 <?php
 /**
- * @todo    General file information
+ * Inliner for CSS
  *
  * @author  Tim Lochmüller
  */
@@ -13,13 +13,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 
 /**
- * @todo   General class information
- *
- * @author Tim Lochmüller
+ * Inliner for CSS
  */
 class InlineCss implements PostprocessingInterface {
 
 	/**
+	 * Call the inliner CSS processor
+	 *
 	 * @param string $content
 	 *
 	 * @return string

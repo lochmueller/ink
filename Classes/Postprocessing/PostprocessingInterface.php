@@ -1,17 +1,19 @@
 <?php
 
 /**
- *
+ * Interface for processing
  */
 
 namespace FRUIT\Ink\Postprocessing;
 
 /**
- * Interface PostprocessingInterface
+ * Interface for processing
  */
 interface PostprocessingInterface {
 
 	/**
+	 * Run the process
+	 *
 	 * @param string $content
 	 *
 	 * @return string

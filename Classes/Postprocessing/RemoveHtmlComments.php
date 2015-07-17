@@ -1,6 +1,6 @@
 <?php
 /**
- * @todo    General file information
+ * Remove HTML comments
  *
  * @author  Tim Lochmüller
  */
@@ -8,13 +8,13 @@
 namespace FRUIT\Ink\Postprocessing;
 
 /**
- * @todo   General class information
- *
- * @author Tim Lochmüller
+ * Remove HTML comments
  */
 class RemoveHtmlComments implements PostprocessingInterface {
 
 	/**
+	 * Run the replacement of the comments
+	 *
 	 * @param string $content
 	 *
 	 * @return string

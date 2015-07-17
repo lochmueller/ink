@@ -1,6 +1,6 @@
 <?php
 /**
- * @todo    General file information
+ * Remove generator
  *
  * @author  Tim Lochmüller
  */
@@ -8,13 +8,13 @@
 namespace FRUIT\Ink\Postprocessing;
 
 /**
- * @todo   General class information
- *
- * @author Tim Lochmüller
+ * Remove generator
  */
 class RemoveGenerator implements PostprocessingInterface {
 
 	/**
+	 * Remove the generator tag
+	 *
 	 * @param string $content
 	 *
 	 * @return string

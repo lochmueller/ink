@@ -1,6 +1,6 @@
 <?php
 /**
- * @todo    General file information
+ * Remove multiple empty lines
  *
  * @author  Tim Lochmüller
  */
@@ -8,13 +8,13 @@
 namespace FRUIT\Ink\Postprocessing;
 
 /**
- * @todo   General class information
- *
- * @author Tim Lochmüller
+ * Remove multiple empty lines
  */
 class RemoveMultipleEmptyLines implements PostprocessingInterface {
 
 	/**
+	 * Run the cleanup of the empty lines
+	 *
 	 * @param string $content
 	 *
 	 * @return string
