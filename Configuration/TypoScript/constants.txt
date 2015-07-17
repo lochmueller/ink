@@ -6,3 +6,6 @@ ink.footerMenuPid = 0
 
 # cat=ink; type=string; label=UIDs of the content element for the legal information content elements (CSV)
 ink.legalInformationContentElements = 0
+
+# cat=ink; type=int+; label=Width of the plain text rendering
+ink.plainTextWidth = 76

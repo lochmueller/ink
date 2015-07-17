@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Reflection\MethodReflection;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  *  PlainText Service
@@ -97,7 +98,7 @@ class PlainRenderer {
 	}
 
 	/**
-	 * Breaking lines into fixed length lines, using t3lib_div::breakLinesForEmail()
+	 * Breaking lines into fixed length lines, using GeneralUtility::breakLinesForEmail()
 	 *
 	 * @param        string  $str       : The string to break
 	 * @param        string  $implChar  : Line break character
@@ -106,7 +107,7 @@ class PlainRenderer {
 	 * @return        string                Processed string
 	 */
 	function breakLines($str, $implChar = LF, $charWidth = 76) {
-		return MailUtility::breakLinesForEmail($str, $implChar, $charWidth);
+		return MailUtility::breakLinesForEmail($str, $implChar, Configuration::getPlainTextWith());
 	}
 
 	/**

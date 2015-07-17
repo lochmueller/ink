@@ -4,6 +4,7 @@ config {
 	linkVars =
 	spamProtectEmailAddresses = 0
 	absRefPrefix = {$ink.absRefPrefix}
+	plainTextWith = {$ink.plainTextWidth}
 }
 [globalVar = GP:type = 0]||[globalVar = GP:type = ]
 config {

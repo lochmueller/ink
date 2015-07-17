@@ -131,7 +131,7 @@ Link: ||
 	div = TEXT
 	div.value =
     div.strPad {
-      length = 76
+      length = {$ink.plainTextWidth}
       padWith = #
       type = both
     }

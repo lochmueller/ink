@@ -7,6 +7,7 @@
 
 namespace FRUIT\Ink\Rendering;
 
+use FRUIT\Ink\Configuration;
 use TYPO3\CMS\Core\Utility\MailUtility;
 
 /**
@@ -32,7 +33,7 @@ abstract class AbstractRendering implements RenderingInterface {
 	}
 
 	/**
-	 * Breaking lines into fixed length lines, using t3lib_div::breakLinesForEmail()
+	 * Breaking lines into fixed length lines, using GeneralUtility::breakLinesForEmail()
 	 *
 	 * @param        string  $str       : The string to break
 	 * @param        string  $implChar  : Line break character
@@ -41,6 +42,6 @@ abstract class AbstractRendering implements RenderingInterface {
 	 * @return        string                Processed string
 	 */
 	function breakLines($str, $implChar = LF, $charWidth = 76) {
-		return MailUtility::breakLinesForEmail($str, $implChar, $charWidth);
+		return MailUtility::breakLinesForEmail($str, $implChar, Configuration::getPlainTextWith());
 	}
 }
