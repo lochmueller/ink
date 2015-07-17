@@ -9,7 +9,7 @@
 
 $EM_CONF['ink'] = array(
 	'title'            => 'Ink',
-	'description'      => 'Build stable and flexible newsltter templates.',
+	'description'      => 'Build stable and flexible newsletter templates. Please contribute at https://github.com/lochmueller/ink',
 	'category'         => 'fe',
 	'version'          => '0.1.0',
 	'state'            => 'beta',
