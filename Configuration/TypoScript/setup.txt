@@ -5,6 +5,7 @@ config {
 	spamProtectEmailAddresses = ascii
 	absRefPrefix = {$ink.absRefPrefix}
 	plainTextWith = {$ink.plainTextWidth}
+	tableMode = {$ink.tableMode}
 }
 [globalVar = GP:type = 0]||[globalVar = GP:type = ]
 config {

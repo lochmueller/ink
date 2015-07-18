@@ -9,3 +9,6 @@ ink.legalInformationContentElements = 0
 
 # cat=ink; type=int+; label=Width of the plain text rendering
 ink.plainTextWidth = 76
+
+# cat=ink; type=options[default,ascii_old,ascii_compact,unicode,markdown]; label=Render mode of the table plain text
+ink.tableMode = default

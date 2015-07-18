@@ -8,6 +8,7 @@
 
 namespace FRUIT\Ink\Rendering;
 
+use FRUIT\Ink\Configuration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -23,13 +24,81 @@ class Table extends AbstractRendering {
 	 * @var array
 	 */
 	protected $tableSettings = array(
-		'default' => array(
-			'join'   => '+',
-			'xChar'  => '-',
-			'yChar'  => '|',
-			'xSpace' => 1,
-			'ySpace' => 0,
-		)
+		'default'       => array(
+			'join'           => '+',
+			'xChar'          => '-',
+			'xCharHeader'    => '-',
+			'yChar'          => '|',
+			'yCharHeader'    => '|',
+			'xSpace'         => 1,
+			'ySpace'         => 0,
+			'separateData'   => FALSE,
+			'separateHeader' => TRUE,
+			'outerTop'       => TRUE,
+			'outerBottom'    => TRUE,
+			'outerLeft'      => TRUE,
+			'outerRight'     => TRUE,
+		),
+		'ascii_old'     => array(
+			'join'           => '+',
+			'xChar'          => '-',
+			'xCharHeader'    => '=',
+			'yChar'          => '|',
+			'yCharHeader'    => '|',
+			'xSpace'         => 1,
+			'ySpace'         => 0,
+			'separateData'   => TRUE,
+			'separateHeader' => TRUE,
+			'outerTop'       => TRUE,
+			'outerBottom'    => TRUE,
+			'outerLeft'      => TRUE,
+			'outerRight'     => TRUE,
+		),
+		'ascii_compact' => array(
+			'join'           => ' ',
+			'xChar'          => ' ',
+			'xCharHeader'    => '=',
+			'yChar'          => ' ',
+			'yCharHeader'    => ' ',
+			'xSpace'         => 0,
+			'ySpace'         => 0,
+			'separateData'   => FALSE,
+			'separateHeader' => TRUE,
+			'outerTop'       => FALSE,
+			'outerBottom'    => FALSE,
+			'outerLeft'      => FALSE,
+			'outerRight'     => FALSE,
+		),
+		'unicode'       => array(
+			'join'           => '╬',
+			'xChar'          => '═',
+			'xCharHeader'    => '═',
+			'yChar'          => '║',
+			'yCharHeader'    => '║',
+			'xSpace'         => 1,
+			'ySpace'         => 0,
+			'separateData'   => FALSE,
+			'separateHeader' => TRUE,
+			'outerTop'       => TRUE,
+			'outerBottom'    => TRUE,
+			'outerLeft'      => TRUE,
+			'outerRight'     => TRUE,
+		),
+		'markdown'      => array(
+			'join'           => ' ',
+			'xChar'          => ' ',
+			'xCharHeader'    => '-',
+			'yChar'          => '|',
+			'yCharHeader'    => '|',
+			'xSpace'         => 1,
+			'ySpace'         => 0,
+			'separateData'   => FALSE,
+			'separateHeader' => TRUE,
+			'outerTop'       => FALSE,
+			'outerBottom'    => FALSE,
+			'outerLeft'      => TRUE,
+			'outerRight'     => TRUE,
+		),
 	);
 
 	/**
@@ -37,7 +106,7 @@ class Table extends AbstractRendering {
 	 *
 	 * @var string
 	 */
-	protected $renderMode = 'default';
+	protected $renderMode = 'markdown';
 
 	/**
 	 * @return array
@@ -45,6 +114,7 @@ class Table extends AbstractRendering {
 	public function renderInternal() {
 		$controller = GeneralUtility::makeInstance('TYPO3\\CMS\\CssStyledContent\\Controller\\CssStyledContentController');
 		$controller->cObj = $this->contentObject;
+		$this->renderMode = Configuration::getTableMode();
 		$htmlTable = $controller->render_table();
 		$tableData = $this->parseHtmlTable($htmlTable);
 		return $this->getTable($tableData);
@@ -109,33 +179,55 @@ class Table extends AbstractRendering {
 		$columnsHeaders = $this->columns_headers($table);
 		$columns_lengths = $this->columns_lengths($table, $columnsHeaders);
 
-		$lines[] = $this->renderLine($columns_lengths);
+		$topLine = $this->renderLine($columns_lengths, 'top', 'CharHeader');
+		if ($topLine) {
+			$lines[] = $topLine;
+		}
 		#$lines[] = str_repeat($row_spacer, $this->tableSettings['default']['ySpace']);
 		$lines[] = $this->renderHeader($columns_lengths, $columnsHeaders);
 		#$lines[] = str_repeat($row_spacer, $this->tableSettings['default']['ySpace']);
-		$lines[] = $this->renderLine($columns_lengths);
+		if ($this->tableSettings[$this->renderMode]['separateHeader']) {
+			$lines[] = $this->renderLine($columns_lengths, 'default', 'CharHeader');
+		}
 		#$lines[] = str_repeat($row_spacer, $this->tableSettings['default']['ySpace']);
 		foreach ($table as $row_cells) {
 			$lines[] = $this->renderCell($row_cells, $columnsHeaders, $columns_lengths);
-			#$lines[] = str_repeat($row_spacer, $this->tableSettings['default']['ySpace']);
+			if ($this->tableSettings[$this->renderMode]['separateData']) {
+				$lines[] = $this->renderLine($columns_lengths);
+			}
 		}
-		$lines[] = $this->renderLine($columns_lengths);
+
+		$bottomLine = $this->renderLine($columns_lengths, 'bottom');
+		if ($bottomLine) {
+			$lines[] = $bottomLine;
+		}
 		return $lines;
 	}
 
 	/**
 	 * Render a separation line
 	 *
-	 * @param $columnsLengths
+	 * @param        $columnsLengths
+	 * @param string $specialLine
+	 * @param string $charMode
 	 *
 	 * @return string
 	 */
-	protected function renderLine($columnsLengths) {
-		$row = '';
-		foreach ($columnsLengths as $column_length) {
-			$row .= $this->tableSettings[$this->renderMode]['join'] . str_repeat($this->tableSettings[$this->renderMode]['xChar'], ($this->tableSettings[$this->renderMode]['xSpace'] * 2) + $column_length);
+	protected function renderLine($columnsLengths, $specialLine = 'default', $charMode = 'Char') {
+		if (isset($this->tableSettings[$this->renderMode]['outer' . ucfirst($specialLine)]) && $this->tableSettings[$this->renderMode]['outer' . ucfirst($specialLine)] === FALSE) {
+			return FALSE;
 		}
-		return $row . $this->tableSettings[$this->renderMode]['join'];
+		$row = '';
+		foreach ($columnsLengths as $key => $column_length) {
+			if ($key !== 0 || $this->tableSettings[$this->renderMode]['outerLeft']) {
+				$row .= $this->tableSettings[$this->renderMode]['join'];
+			}
+			$row .= str_repeat($this->tableSettings[$this->renderMode]['x' . $charMode], ($this->tableSettings[$this->renderMode]['xSpace'] * 2) + $column_length);
+		}
+		if ($this->tableSettings[$this->renderMode]['outerRight']) {
+			$row .= $this->tableSettings[$this->renderMode]['join'];
+		}
+		return $row;
 	}
 
 	/**
@@ -146,10 +238,16 @@ class Table extends AbstractRendering {
 	 */
 	protected function renderHeader($columnsLengths, $columnsHeaders) {
 		$row = '';
-		foreach ($columnsHeaders as $header) {
-			$row .= $this->tableSettings[$this->renderMode]['yChar'] . str_pad($header, ($this->tableSettings[$this->renderMode]['xSpace'] * 2) + $columnsLengths[$header], ' ', STR_PAD_BOTH);
+		foreach ($columnsHeaders as $key => $header) {
+			if ($key !== 0 || $this->tableSettings[$this->renderMode]['outerLeft']) {
+				$row .= $this->tableSettings[$this->renderMode]['yChar'];
+			}
+			$row .= str_pad($header, ($this->tableSettings[$this->renderMode]['xSpace'] * 2) + $columnsLengths[$header], ' ', STR_PAD_BOTH);
 		}
-		return $row . $this->tableSettings[$this->renderMode]['yChar'];
+		if ($this->tableSettings[$this->renderMode]['outerRight']) {
+			$row .= $this->tableSettings[$this->renderMode]['yChar'];
+		}
+		return $row;
 	}
 
 	/**
@@ -161,18 +259,21 @@ class Table extends AbstractRendering {
 	 */
 	function renderCell($row_cells, $columns_headers, $columns_lengths) {
 		$row = '';
-		foreach ($columns_headers as $header) {
+		foreach ($columns_headers as $key => $header) {
+			$line = array();
 			$stringLength = mb_strlen(utf8_decode($row_cells[$header]));
-			$line = array(
-				$this->tableSettings['default']['yChar'],
-				str_repeat(' ', $this->tableSettings['default']['xSpace']),
-				$row_cells[$header],
-				str_repeat(' ', $columns_lengths[$header] - $stringLength + $this->tableSettings['default']['xSpace']),
-			);
+			if ($key !== 0 || $this->tableSettings[$this->renderMode]['outerLeft']) {
+				$line[] = $this->tableSettings[$this->renderMode]['yChar'];
+			}
+			$line[] = str_repeat(' ', $this->tableSettings[$this->renderMode]['xSpace']);
+			$line[] = $row_cells[$header];
+			$line[] = str_repeat(' ', $columns_lengths[$header] - $stringLength + $this->tableSettings[$this->renderMode]['xSpace']);
+
 			$row .= implode('', $line);
 		}
-		$row .= $this->tableSettings['default']['yChar'];
-
+		if ($this->tableSettings[$this->renderMode]['outerRight']) {
+			$row .= $this->tableSettings[$this->renderMode]['yChar'];
+		}
 		return $row;
 	}
 
@@ -210,20 +311,5 @@ class Table extends AbstractRendering {
 			$lengths[$header] = $max;
 		}
 		return $lengths;
-	}
-
-	/**
-	 * @param $columns_lengths
-	 *
-	 * @return string
-	 */
-	function row_spacer($columns_lengths) {
-		$row = '';
-		foreach ($columns_lengths as $column_length) {
-			$row .= $this->tableSettings['default']['yChar'] . str_repeat(' ', ($this->tableSettings['default']['xSpace'] * 2) + $column_length);
-		}
-		$row .= $this->tableSettings['default']['yChar'];
-
-		return $row;
 	}
 }
