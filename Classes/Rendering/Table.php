@@ -183,13 +183,10 @@ class Table extends AbstractRendering {
 		if ($topLine) {
 			$lines[] = $topLine;
 		}
-		#$lines[] = str_repeat($row_spacer, $this->tableSettings['default']['ySpace']);
 		$lines[] = $this->renderHeader($columns_lengths, $columnsHeaders);
-		#$lines[] = str_repeat($row_spacer, $this->tableSettings['default']['ySpace']);
 		if ($this->tableSettings[$this->renderMode]['separateHeader']) {
 			$lines[] = $this->renderLine($columns_lengths, 'default', 'CharHeader');
 		}
-		#$lines[] = str_repeat($row_spacer, $this->tableSettings['default']['ySpace']);
 		foreach ($table as $row_cells) {
 			$lines[] = $this->renderCell($row_cells, $columnsHeaders, $columns_lengths);
 			if ($this->tableSettings[$this->renderMode]['separateData']) {
@@ -310,6 +307,45 @@ class Table extends AbstractRendering {
 
 			$lengths[$header] = $max;
 		}
+
+		return $this->increaseLengthToo100Percent($lengths);
+	}
+
+	protected function increaseLengthToo100Percent($lengths) {
+		if (!Configuration::isPlainTable100()) {
+			return $lengths;
+		}
+		$fullWidth = Configuration::getPlainTextWith();
+
+		// Calc
+		$rowCount = sizeof($lengths) + 1;
+		$yCount = $rowCount - 2;
+		$currentWidth = array_sum($lengths);
+		if ($this->tableSettings[$this->renderMode]['outerLeft']) {
+			$yCount++;
+		}
+		if ($this->tableSettings[$this->renderMode]['outerRight']) {
+			$yCount++;
+		}
+		$currentWidth += strlen($this->tableSettings[$this->renderMode]['yChar']) * $yCount;
+		$currentWidth += $this->tableSettings[$this->renderMode]['xSpace'] * $rowCount;
+
+		if ($fullWidth < $currentWidth) {
+			return $lengths;
+		}
+
+		$moreChars = $fullWidth - $currentWidth;
+		while ($moreChars > 0) {
+			foreach ($lengths as $key => $value) {
+				if ($moreChars <= 0) {
+					break;
+				}
+				$lengths[$key]++;
+				$moreChars--;
+
+			}
+		}
+
 		return $lengths;
 	}
 }

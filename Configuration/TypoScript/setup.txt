@@ -6,6 +6,7 @@ config {
 	absRefPrefix = {$ink.absRefPrefix}
 	plainTextWith = {$ink.plainTextWidth}
 	tableMode = {$ink.tableMode}
+	plainTable100 = {$ink.plainTable100}
 }
 [globalVar = GP:type = 0]||[globalVar = GP:type = ]
 config {

@@ -12,3 +12,6 @@ ink.plainTextWidth = 76
 
 # cat=ink; type=options[default,ascii_old,ascii_compact,unicode,markdown]; label=Render mode of the table plain text
 ink.tableMode = default
+
+# cat=ink; type=boolean; label=Should the tables displayed as 100% in the plaintext view?
+ink.plainTable100 = 1

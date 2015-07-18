@@ -30,4 +30,13 @@ class Configuration {
 		return isset($GLOBALS['TSFE']->config['config']['tableMode']) && trim($GLOBALS['TSFE']->config['config']['tableMode']) !== '' ? trim($GLOBALS['TSFE']->config['config']['tableMode']) : 'default';
 	}
 
+	/**
+	 * check if the plain tables are 100 displayed
+	 *
+	 * @return string
+	 */
+	static public function isPlainTable100() {
+		return isset($GLOBALS['TSFE']->config['config']['plainTable100']) && trim($GLOBALS['TSFE']->config['config']['plainTable100']) !== '' ? (bool)$GLOBALS['TSFE']->config['config']['plainTable100'] : TRUE;
+	}
+
 }
