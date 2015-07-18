@@ -5,14 +5,12 @@
  * @author  Tim Lochmüller
  */
 
+namespace FRUIT\Ink\Rendering;
+
 /**
  * @todo General class information
  *
  */
-
-namespace FRUIT\Ink\Rendering;
-
-
 class TextPicture extends AbstractRendering {
 
 	/**

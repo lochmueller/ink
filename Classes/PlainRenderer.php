@@ -7,9 +7,11 @@
 namespace FRUIT\Ink;
 
 use FRUIT\Ink\Rendering\RenderingInterface;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  *  PlainText Service
@@ -52,13 +54,17 @@ class PlainRenderer {
 			'html'            => 'FRUIT\\Ink\\Rendering\\Html',
 			'header'          => 'FRUIT\\Ink\\Rendering\\Header',
 			'table'           => 'FRUIT\\Ink\\Rendering\\Table',
-			#'menu'            => 'FRUIT\\Ink\\Rendering\\Menu',
+			'menu'            => 'FRUIT\\Ink\\Rendering\\Menu',
 			'text'            => 'FRUIT\\Ink\\Rendering\\Text',
-			#'image'           => 'FRUIT\\Ink\\Rendering\\Image',
+			'image'           => 'FRUIT\\Ink\\Rendering\\Image',
 			'textpic'         => 'FRUIT\\Ink\\Rendering\\TextPicture',
 			'templavoila_pi1' => 'FRUIT\\Ink\\Rendering\\Templavoila',
 			'list'            => 'FRUIT\\Ink\\Rendering\\Plugin',
 		);
+
+		GeneralUtility::requireOnce(ExtensionManagementUtility::extPath('ink', 'Classes/Rendering/Plugin.php'));
+		GeneralUtility::requireOnce(ExtensionManagementUtility::extPath('ink', 'Classes/Rendering/Image.php'));
+		GeneralUtility::requireOnce(ExtensionManagementUtility::extPath('ink', 'Classes/Rendering/Menu.php'));
 
 		$objectManager = new ObjectManager();
 		/** @var Dispatcher $signalSlot */
@@ -69,7 +75,7 @@ class PlainRenderer {
 		if (isset($renderer[$CType])) {
 			$className = $renderer[$CType];
 			/** @var RenderingInterface $renderObject */
-			$renderObject = GeneralUtility::makeInstance($className);
+			$renderObject = $objectManager->get($className);
 			$lines = $renderObject->render($this->cObj, $this->conf);
 		} else {
 			$lines[] = 'CType: ' . $CType . ' have no rendering definitions';
@@ -90,7 +96,6 @@ class PlainRenderer {
 	 */
 	function atag_to_http($content, $conf) {
 		$this->conf = $conf;
-		$this->siteUrl = $conf['siteUrl'];
 		$theLink = trim($this->cObj->parameters['href']);
 		if (strtolower(substr($theLink, 0, 7)) == 'mailto:') {
 			$theLink = substr($theLink, 7);

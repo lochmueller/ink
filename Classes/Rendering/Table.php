@@ -6,17 +6,15 @@
  * @author  Tim Lochmüller
  */
 
+namespace FRUIT\Ink\Rendering;
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * @todo   General class information
  *
  * @author Tim Lochmüller
  */
-
-namespace FRUIT\Ink\Rendering;
-
-
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 class Table extends AbstractRendering {
 
 	/**

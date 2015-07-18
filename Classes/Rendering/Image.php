@@ -5,18 +5,16 @@
  * @author  Tim Lochmüller
  */
 
-/**
- * @todo General class information
- *
- */
-
 namespace FRUIT\Ink\Rendering;
-
 
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
+/**
+ * @todo General class information
+ *
+ */
 class Image extends AbstractRendering {
 
 	/**
@@ -25,9 +23,6 @@ class Image extends AbstractRendering {
 	 * @return array
 	 */
 	public function renderInternal() {
-
-		$lines[] = 'Todo: Images';
-
 		$objectManager = new ObjectManager();
 		/** @var FileRepository $fileRepository */
 		$fileRepository = $objectManager->get('TYPO3\\CMS\\Core\\Resource\\FileRepository');
@@ -36,7 +31,7 @@ class Image extends AbstractRendering {
 		$images_arr = array();
 		foreach ($files as $file) {
 			/** @var $file File */
-			$images_arr[] = $file->getPublicUrl();
+			$images_arr[] = $this->getLink($file->getPublicUrl());
 		}
 
 		$lines[] = $this->renderImagesHelper($images_arr, !$this->contentObject->data['image_zoom'] ? $this->contentObject->data['image_link'] : '', $this->contentObject->data['imagecaption']);
