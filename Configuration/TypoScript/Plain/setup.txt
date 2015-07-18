@@ -219,9 +219,8 @@ plainPage {
         1.NO.stdWrap.append = TEXT
 		1.NO.stdWrap.append.stdWrap {
 			typolink.parameter.data = page:uid
-			typolink.additionalParams = &L=0 || &L=1 || &L=2
 			typolink.addQueryString = 1
-			typolink.addQueryString.exclude = L,id,cHash,no_cache
+			typolink.addQueryString.exclude = L,id,cHash,no_cache,type
 			typolink.addQueryString.method = GET
 			typolink.useCacheHash = 0
 			typolink.no_cache = 0
