@@ -1,6 +1,6 @@
 <?php
 /**
- * @todo    General file information
+ * Render a plugin
  *
  * @author  Tim Lochmüller
  */
@@ -8,7 +8,7 @@
 namespace FRUIT\Ink\Rendering;
 
 /**
- * @todo General class information
+ * Render a plugin
  */
 class Plugin extends AbstractRendering {
 

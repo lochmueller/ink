@@ -1,9 +1,8 @@
 <?php
 /**
- * @todo    General file information
+ * Render a table
  *
- * @package ...
- * @author  Tim Lochmüller
+ * @author Tim Lochmüller
  */
 
 namespace FRUIT\Ink\Rendering;
@@ -12,9 +11,7 @@ use FRUIT\Ink\Configuration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * @todo   General class information
- *
- * @author Tim Lochmüller
+ * Render a table
  */
 class Table extends AbstractRendering {
 
@@ -120,6 +117,11 @@ class Table extends AbstractRendering {
 		return $this->getTable($tableData);
 	}
 
+	/**
+	 * @param $html
+	 *
+	 * @return array
+	 */
 	protected function parseHtmlTable($html) {
 		$dom = new \DOMDocument();
 
@@ -170,6 +172,8 @@ class Table extends AbstractRendering {
 	}
 
 	/**
+	 * Get the table
+	 *
 	 * @param $table
 	 *
 	 * @return string
@@ -311,6 +315,11 @@ class Table extends AbstractRendering {
 		return $this->increaseLengthToo100Percent($lengths);
 	}
 
+	/**
+	 * @param $lengths
+	 *
+	 * @return mixed
+	 */
 	protected function increaseLengthToo100Percent($lengths) {
 		if (!Configuration::isPlainTable100()) {
 			return $lengths;

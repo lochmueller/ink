@@ -1,8 +1,8 @@
 <?php
 /**
- * @todo    General file information
+ * Rendering image elements
  *
- * @author  Tim Lochmüller
+ * @author Tim Lochmüller
  */
 
 namespace FRUIT\Ink\Rendering;
@@ -12,8 +12,7 @@ use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * @todo General class information
- *
+ * Rendering image elements
  */
 class Image extends AbstractRendering {
 

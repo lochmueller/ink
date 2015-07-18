@@ -17,11 +17,15 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 abstract class AbstractRendering implements RenderingInterface {
 
 	/**
+	 * Content object
+	 *
 	 * @var ContentObjectRenderer
 	 */
 	protected $contentObject;
 
 	/**
+	 * Configuration
+	 *
 	 * @var array
 	 */
 	protected $configuration;

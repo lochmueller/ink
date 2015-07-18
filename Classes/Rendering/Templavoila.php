@@ -1,8 +1,8 @@
 <?php
 /**
- * @todo    General file information
+ * Render templavoila
  *
- * @author  Tim Lochmüller
+ * @author Tim Lochmüller
  */
 
 namespace FRUIT\Ink\Rendering;
@@ -11,7 +11,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * @todo General class information
+ * Render templavoila
  */
 class Templavoila extends AbstractRendering {
 

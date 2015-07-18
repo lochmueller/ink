@@ -1,6 +1,6 @@
 <?php
 /**
- * @todo    General file information
+ * Render text w/ picture element
  *
  * @author  Tim Lochmüller
  */
@@ -8,8 +8,7 @@
 namespace FRUIT\Ink\Rendering;
 
 /**
- * @todo General class information
- *
+ * Render text w/ picture element
  */
 class TextPicture extends AbstractRendering {
 

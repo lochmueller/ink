@@ -1,19 +1,20 @@
 <?php
 /**
- * @todo    General file information
+ * Render text elements
  *
- * @package ...
  * @author  Tim Lochmüller
  */
 
 namespace FRUIT\Ink\Rendering;
 
 /**
- * @todo   General class information
+ * Render text elements
  */
 class Text extends AbstractRendering {
 
 	/**
+	 * Render the current content
+	 *
 	 * @return array
 	 */
 	public function renderInternal() {

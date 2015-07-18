@@ -9,6 +9,7 @@ namespace FRUIT\Ink\Rendering;
 
 use FRUIT\Ink\Configuration;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Render Ctype menu
@@ -29,9 +30,10 @@ class Menu extends AbstractRendering {
 	/**
 	 * Breaks content lines into a bullet list
 	 *
-	 * @param    string $str : Content string to make into a bullet list
+	 * @param ContentObjectRenderer $contentObject
+	 * @param string                $str Content string to make into a bullet list
 	 *
-	 * @return    string        Processed value
+	 * @return string Processed value
 	 */
 	function breakBulletList($contentObject, $str) {
 		$type = $contentObject->data['layout'];
