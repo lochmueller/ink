@@ -16,7 +16,6 @@ namespace FRUIT\Ink\Rendering;
 
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class Table extends AbstractRendering {
 
@@ -43,13 +42,11 @@ class Table extends AbstractRendering {
 	protected $renderMode = 'default';
 
 	/**
-	 * @param ContentObjectRenderer $contentObject
-	 *
 	 * @return array
 	 */
-	public function render($contentObject) {
+	public function renderInternal() {
 		$controller = GeneralUtility::makeInstance('TYPO3\\CMS\\CssStyledContent\\Controller\\CssStyledContentController');
-		$controller->cObj = $contentObject;
+		$controller->cObj = $this->contentObject;
 		$htmlTable = $controller->render_table();
 		$tableData = $this->parseHtmlTable($htmlTable);
 		return $this->getTable($tableData);

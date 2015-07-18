@@ -7,16 +7,13 @@
 namespace FRUIT\Ink;
 
 use FRUIT\Ink\Rendering\RenderingInterface;
-use FRUIT\Ink\Rendering\Table;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Reflection\MethodReflection;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  *  PlainText Service
@@ -176,43 +173,6 @@ class PlainRenderer {
 	}
 
 	/**
-	 * Breaks content lines into a bullet list
-	 *
-	 * @param    string $str : Content string to make into a bullet list
-	 *
-	 * @return    string        Processed value
-	 */
-	function breakBulletlist($str) {
-		$type = $this->cObj->data['layout'];
-		$type = MathUtility::forceIntegerInRange($type, 0, 3);
-
-		$tConf = $this->conf['bulletlist.'][$type . '.'];
-
-		$cParts = explode(chr(10), $str);
-		$lines = array();
-		$c = 0;
-
-		foreach ($cParts as $substrs) {
-			if (!strlen($substrs)) {
-				continue;
-			}
-			$c++;
-			$bullet = $tConf['bullet'] ? $tConf['bullet'] : ' - ';
-			$bLen = strlen($bullet);
-			$bullet = substr(str_replace('#', $c, $bullet), 0, $bLen);
-			$secondRow = substr($tConf['secondRow'] ? $tConf['secondRow'] : str_pad('', strlen($bullet), ' '), 0, $bLen);
-
-			$lines[] = $bullet . $this->breakLines($substrs, chr(10) . $secondRow, 76 - $bLen);
-
-			$blanks = MathUtility::forceIntegerInRange($tConf['blanks'], 0, 1000);
-			if ($blanks) {
-				$lines[] = str_pad('', $blanks - 1, chr(10));
-			}
-		}
-		return implode(chr(10), $lines);
-	}
-
-	/**
 	 * Render the different elements and collect the single lines.
 	 * After the rendering the lines will be imploded. Notice:
 	 * All methods after this are CType rendering helper
@@ -233,12 +193,15 @@ class PlainRenderer {
 		$renderer = array(
 			'html'   => 'FRUIT\\Ink\\Rendering\\Html',
 			'header' => 'FRUIT\\Ink\\Rendering\\Header',
+			'table'  => 'FRUIT\\Ink\\Rendering\\Table',
+			#'menu'   => 'FRUIT\\Ink\\Rendering\\Menu',
+			'text'   => 'FRUIT\\Ink\\Rendering\\Text',
 		);
 
 		if (isset($renderer[$CType])) {
 			$className = $renderer[$CType];
 			/** @var RenderingInterface $renderObject */
-			$renderObject = new $className();
+			$renderObject = GeneralUtility::makeInstance($className);
 			$lines = $renderObject->render($this->cObj);
 		} else {
 
@@ -252,47 +215,6 @@ class PlainRenderer {
 		}
 		$content = implode(LF, $lines);
 		return trim($content, CRLF . TAB);
-	}
-
-	/**
-	 * Creates a menu/sitemap
-	 *
-	 * @CType menu
-	 *
-	 * @return        string                $str: Content
-	 */
-	function getMenuSitemap() {
-		$str = $this->cObj->cObjGetSingle($this->conf['menu'], $this->conf['menu.']);
-		$str = $this->breakBulletlist(trim(strip_tags(preg_replace('/<br\s*\/?>/i', chr(10), $this->parseBody($str)))));
-		return $str;
-	}
-
-	/**
-	 * Render a table
-	 *
-	 * @CType table
-	 *
-	 * @param array $lines
-	 *
-	 * @return array
-	 */
-	public function renderTable($lines = array()) {
-		$tableRenderer = new Table();
-		return $tableRenderer->render($this->cObj);
-	}
-
-	/**
-	 * Render text
-	 *
-	 * @CType text
-	 *
-	 * @param array $lines
-	 *
-	 * @return array
-	 */
-	public function renderText($lines = array()) {
-		$lines[] = trim($this->breakContent(strip_tags($this->parseBody($this->cObj->data['bodytext']))), CRLF . TAB);
-		return $lines;
 	}
 
 	/**
