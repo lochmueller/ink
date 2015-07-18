@@ -91,6 +91,17 @@ abstract class AbstractRendering implements RenderingInterface {
 	}
 
 	/**
+	 * Returns a typolink URL based on input.
+	 *
+	 * @param    string $ll : Parameter to typolink
+	 *
+	 * @return    string        The URL returned from $this->cObj->getTypoLink_URL(); - possibly it prefixed with the URL of the site if not present already
+	 */
+	function getLink($ll) {
+		return $this->contentObject->getTypoLink_URL($ll);
+	}
+
+	/**
 	 * Breaking lines into fixed length lines, using GeneralUtility::breakLinesForEmail()
 	 *
 	 * @param        string  $str       : The string to break

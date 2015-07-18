@@ -7,12 +7,9 @@
 namespace FRUIT\Ink;
 
 use FRUIT\Ink\Rendering\RenderingInterface;
-use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Reflection\MethodReflection;
 
 /**
@@ -108,71 +105,6 @@ class PlainRenderer {
 	}
 
 	/**
-	 * Returns a typolink URL based on input.
-	 *
-	 * @param    string $ll : Parameter to typolink
-	 *
-	 * @return    string        The URL returned from $this->cObj->getTypoLink_URL(); - possibly it prefixed with the URL of the site if not present already
-	 */
-	function getLink($ll) {
-		return $this->cObj->getTypoLink_URL($ll);
-	}
-
-	/**
-	 * Render block of images - which means creating lines with links to the images.
-	 *
-	 * @param     array $images_arr : the image array
-	 * @param    string $links      : Link value from the "image_link" field in tt_content records
-	 * @param    string $caption    : Caption text
-	 *
-	 * @return    string        Content
-	 * @see getImages()
-	 */
-	function renderImagesHelper($images_arr, $links, $caption) {
-		$linksArr = explode(',', $links);
-		$lines = array();
-		$imageExists = FALSE;
-
-		foreach ($images_arr as $k => $file) {
-			if (strlen(trim($file)) > 0) {
-				$lines[] = $file;
-				if ($links && count($linksArr) > 1) {
-					if (isset($linksArr[$k])) {
-						$ll = $linksArr[$k];
-					} else {
-						$ll = $linksArr[0];
-					}
-
-					$theLink = $this->getLink($ll);
-					if ($theLink) {
-						$lines[] = $this->conf['images.']['linkPrefix'] . $theLink;
-					}
-				}
-				$imageExists = TRUE;
-			}
-		}
-		if ($this->conf['images.']['header'] && $imageExists) {
-			array_unshift($lines, $this->conf['images.']['header']);
-		}
-		if ($links && count($linksArr) == 1) {
-			$theLink = $this->getLink($links);
-			if ($theLink) {
-				$lines[] = $this->conf['images.']['linkPrefix'] . $theLink;
-			}
-		}
-		if ($caption) {
-			$lines[] = '';
-			$cHeader = trim($this->conf['images.']['captionHeader']);
-			if ($cHeader) {
-				$lines[] = $cHeader;
-			}
-			$lines[] = $this->breakContent($caption);
-		}
-
-		return chr(10) . implode(chr(10), $lines);
-	}
-
-	/**
 	 * Render the different elements and collect the single lines.
 	 * After the rendering the lines will be imploded. Notice:
 	 * All methods after this are CType rendering helper
@@ -191,23 +123,24 @@ class PlainRenderer {
 		}
 
 		$renderer = array(
-			'html'   => 'FRUIT\\Ink\\Rendering\\Html',
-			'header' => 'FRUIT\\Ink\\Rendering\\Header',
-			'table'  => 'FRUIT\\Ink\\Rendering\\Table',
+			'html'    => 'FRUIT\\Ink\\Rendering\\Html',
+			'header'  => 'FRUIT\\Ink\\Rendering\\Header',
+			'table'   => 'FRUIT\\Ink\\Rendering\\Table',
 			#'menu'   => 'FRUIT\\Ink\\Rendering\\Menu',
-			'text'   => 'FRUIT\\Ink\\Rendering\\Text',
+			'text'    => 'FRUIT\\Ink\\Rendering\\Text',
+			'image'   => 'FRUIT\\Ink\\Rendering\\Image',
+			'textpic' => 'FRUIT\\Ink\\Rendering\\TextPicture',
 		);
 
 		if (isset($renderer[$CType])) {
 			$className = $renderer[$CType];
 			/** @var RenderingInterface $renderObject */
 			$renderObject = GeneralUtility::makeInstance($className);
-			$lines = $renderObject->render($this->cObj);
+			$lines = $renderObject->render($this->cObj, $this->conf);
 		} else {
 
 			if ($this->isRegistered($CType)) {
 				$func = $this->registeredCTypes[$CType];
-				#$lines[] = $CType;
 				$lines = $this->$func($lines);
 			} else {
 				$lines[] = 'CType: ' . $CType . ' have no rendering definitions';
@@ -215,57 +148,6 @@ class PlainRenderer {
 		}
 		$content = implode(LF, $lines);
 		return trim($content, CRLF . TAB);
-	}
-
-	/**
-	 * Render text with pic
-	 *
-	 * @CType textpic
-	 *
-	 * @param array $lines
-	 *
-	 * @return array
-	 */
-	public function renderTextpic($lines = array()) {
-		if (!($this->cObj->data['imageorient'] & 24)) {
-			$lines = $this->renderImage($lines);
-			$lines[] = '';
-		}
-		$lines[] = $this->breakContent(strip_tags($this->parseBody($this->cObj->data['bodytext'])));
-		if ($this->cObj->data['imageorient'] & 24) {
-			$lines[] = '';
-			$lines = $this->renderImage($lines);
-		}
-
-		return $lines;
-	}
-
-	/**
-	 * Render image
-	 *
-	 * @CType image
-	 *
-	 * @param array $lines
-	 *
-	 * @return array
-	 */
-	function renderImage($lines = array()) {
-		$lines[] = 'Todo: Images';
-
-		$objectManager = new ObjectManager();
-		/** @var FileRepository $fileRepository */
-		$fileRepository = $objectManager->get('TYPO3\\CMS\\Core\\Resource\\FileRepository');
-		$files = $fileRepository->findByRelation('tt_content', 'image', $this->cObj->data['uid']);
-
-		$images_arr = array();
-		foreach ($files as $file) {
-			/** @var $file File */
-			$images_arr[] = $file->getPublicUrl();
-		}
-
-		$lines[] = $this->renderImagesHelper($images_arr, !$this->cObj->data['image_zoom'] ? $this->cObj->data['image_link'] : '', $this->cObj->data['imagecaption']);
-
-		return $lines;
 	}
 
 	/**
@@ -337,38 +219,6 @@ class PlainRenderer {
 
 		$lines[] = $myContent;
 		return $lines;
-	}
-
-	/**
-	 * Parsing the bodytext field content, removing typical entities and <br /> tags.
-	 *
-	 * @param    string $str     : Field content from "bodytext" or other text field
-	 * @param    string $altConf : Altername conf name (especially when bodyext field in other table then tt_content)
-	 *
-	 * @return    string        Processed content
-	 */
-	function parseBody($str, $altConf = 'bodytext') {
-		if ($this->conf[$altConf . '.']['doubleLF']) {
-			$str = preg_replace("/\n/", "\n\n", $str);
-		}
-		// Regular parsing:
-		$str = preg_replace('/<br\s*\/?>/i', chr(10), $str);
-		$str = $this->cObj->stdWrap($str, $this->conf[$altConf . '.']['stdWrap.']);
-
-		// Then all a-tags:
-		$aConf = array();
-		$aConf['parseFunc.']['tags.']['a'] = 'USER';
-		// check direct mail usage @todo
-		$aConf['parseFunc.']['tags.']['a.']['userFunc'] = 'FRUIT\\Ink\\PlainRenderer->atag_to_http';
-		$aConf['parseFunc.']['tags.']['a.']['siteUrl'] = 'http://www.google.de';
-		$str = $this->cObj->stdWrap($str, $aConf);
-		$str = str_replace('&nbsp;', ' ', htmlspecialchars_decode($str));
-
-		if ($this->conf[$altConf . '.']['header']) {
-			$str = $this->conf[$altConf . '.']['header'] . LF . $str;
-		}
-
-		return chr(10) . $str;
 	}
 
 	/**
