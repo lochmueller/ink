@@ -51,7 +51,23 @@ page.10 {
 			special.value = {$ink.footerMenuPid}
 			1 = TMENU
 			1.NO.allWrap = &nbsp;|&nbsp;&#124; |*| &nbsp;|&nbsp;&#124; |*| &nbsp;|&nbsp;
+			1.NO.stdWrap.cObject = CASE
+			1.NO.stdWrap.cObject {
+				key.field = doktype
+				default = TEXT
+				default {
+					field = title
+					stdWrap.htmlSpecialChars = 1
+				}
+				# 3 = external url
+				3 = TEXT
+				3 {
+					field = title
+					typolink.parameter.field = url
+					typolink.extTarget.field = target
+					doNotLinkIt = 1
+				}
+			}
 		}
-
 	}
 }
