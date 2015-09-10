@@ -2,6 +2,7 @@
 config {
 	xmlprologue = none
 	linkVars =
+	enableContentLengthHeader = 0
 	spamProtectEmailAddresses = ascii
 	absRefPrefix = {$ink.absRefPrefix}
 	plainTextWith = {$ink.plainTextWidth}
