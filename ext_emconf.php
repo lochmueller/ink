@@ -7,7 +7,7 @@
  */
 
 
-$EM_CONF['ink'] = array(
+$EM_CONF[$_EXTKEY] = array(
 	'title'            => 'Ink',
 	'description'      => 'Build stable and flexible newsletter templates. Incl. also the plain text rendering for plain text e-Mails. Please contribute at https://github.com/lochmueller/ink',
 	'category'         => 'fe',
