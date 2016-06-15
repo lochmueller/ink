@@ -8,6 +8,12 @@
       "FRUIT\\Ink\\": "Classes/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "FRUIT\\Ink\\Tests\\": "Tests",
+      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/"
+    }
+  },
   "keywords": [
     "TYPO3 CMS",
     "HTML5 Video Player",
