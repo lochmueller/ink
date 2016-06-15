@@ -1,7 +1,7 @@
 {
   "name": "lochmueller/ink",
   "type": "typo3-cms-extension",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Build stable and flexible newsletter templates. Incl. also the plain text rendering for plain text e-Mails. Please contribute at https://github.com/lochmueller/ink",
   "autoload": {
     "psr-4": {
