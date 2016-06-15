@@ -9,15 +9,15 @@ namespace FRUIT\Ink\Postprocessing;
 /**
  * Interface for processing
  */
-interface PostprocessingInterface {
+interface PostprocessingInterface
+{
 
-	/**
-	 * Run the process
-	 *
-	 * @param string $content
-	 *
-	 * @return string
-	 */
-	public function process($content);
-
+    /**
+     * Run the process
+     *
+     * @param string $content
+     *
+     * @return string
+     */
+    public function process($content);
 }

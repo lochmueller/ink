@@ -10,16 +10,18 @@ namespace FRUIT\Ink\Postprocessing;
 /**
  * Remove HTML comments
  */
-class RemoveHtmlComments implements PostprocessingInterface {
+class RemoveHtmlComments implements PostprocessingInterface
+{
 
-	/**
-	 * Run the replacement of the comments
-	 *
-	 * @param string $content
-	 *
-	 * @return string
-	 */
-	public function process($content) {
-		return preg_replace('/<!--(.*?)-->/s', '', $content);
-	}
+    /**
+     * Run the replacement of the comments
+     *
+     * @param string $content
+     *
+     * @return string
+     */
+    public function process($content)
+    {
+        return preg_replace('/<!--(.*?)-->/s', '', $content);
+    }
 }

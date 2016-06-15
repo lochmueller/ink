@@ -10,17 +10,19 @@ namespace FRUIT\Ink\Postprocessing;
 /**
  * Remove all JS code
  */
-class RemoveJavaScript implements PostprocessingInterface {
+class RemoveJavaScript implements PostprocessingInterface
+{
 
-	/**
-	 * Run the replacement
-	 *
-	 * @param string $content
-	 *
-	 * @return string
-	 * @todo remove also onchange etc.
-	 */
-	public function process($content) {
-		return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $content);
-	}
+    /**
+     * Run the replacement
+     *
+     * @param string $content
+     *
+     * @return string
+     * @todo remove also onchange etc.
+     */
+    public function process($content)
+    {
+        return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $content);
+    }
 }
