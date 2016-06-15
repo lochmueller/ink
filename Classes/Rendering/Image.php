@@ -51,7 +51,7 @@ class Image extends AbstractRendering
      * @return    string        Content
      * @see getImages()
      */
-    function renderImagesHelper($images_arr, $links, $caption)
+    public function renderImagesHelper($images_arr, $links, $caption)
     {
         $linksArr = explode(',', $links);
         $lines = array();

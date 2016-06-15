@@ -37,7 +37,7 @@ class Menu extends AbstractRendering
      *
      * @return string Processed value
      */
-    function breakBulletList($contentObject, $str)
+    public function breakBulletList($contentObject, $str)
     {
         $type = $contentObject->data['layout'];
         $type = MathUtility::forceIntegerInRange($type, 0, 3);

@@ -95,7 +95,7 @@ class PlainRenderer
      * @return    string        Processed output.
      * @see parseBody()
      */
-    function atag_to_http($content, $conf)
+    public function atagToHttp($content, $conf)
     {
         $this->conf = $conf;
         $theLink = trim($this->cObj->parameters['href']);

@@ -55,7 +55,7 @@ abstract class AbstractRendering implements RenderingInterface
      *
      * @return    string        Processed content
      */
-    function parseBody($str, $altConf = 'bodytext')
+    public function parseBody($str, $altConf = 'bodytext')
     {
         if ($this->configuration[$altConf . '.']['doubleLF']) {
             $str = preg_replace("/\n/", "\n\n", $str);
@@ -68,7 +68,7 @@ abstract class AbstractRendering implements RenderingInterface
         $aConf = array();
         $aConf['parseFunc.']['tags.']['a'] = 'USER';
         // check direct mail usage @todo
-        $aConf['parseFunc.']['tags.']['a.']['userFunc'] = 'FRUIT\\Ink\\PlainRenderer->atag_to_http';
+        $aConf['parseFunc.']['tags.']['a.']['userFunc'] = 'FRUIT\\Ink\\PlainRenderer->atagToHttp';
         $aConf['parseFunc.']['tags.']['a.']['siteUrl'] = 'http://www.google.de';
         $str = $this->contentObject->stdWrap($str, $aConf);
         $str = str_replace('&nbsp;', ' ', htmlspecialchars_decode($str));
@@ -88,7 +88,7 @@ abstract class AbstractRendering implements RenderingInterface
      * @return        string                Processed value.
      * @see main_plaintext(), breakLines()
      */
-    function breakContent($str)
+    public function breakContent($str)
     {
         $cParts = explode(chr(10), $str);
         $lines = array();
@@ -105,7 +105,7 @@ abstract class AbstractRendering implements RenderingInterface
      *
      * @return    string        The URL returned from $this->cObj->getTypoLink_URL(); - possibly it prefixed with the URL of the site if not present already
      */
-    function getLink($ll)
+    public function getLink($ll)
     {
         return $this->contentObject->getTypoLink_URL($ll);
     }
@@ -119,7 +119,7 @@ abstract class AbstractRendering implements RenderingInterface
      *
      * @return        string                Processed string
      */
-    function breakLines($str, $implChar = LF, $charWidth = false)
+    public function breakLines($str, $implChar = LF, $charWidth = false)
     {
         $charWidth = $charWidth === false ? Configuration::getPlainTextWith() : (int)$charWidth;
         return MailUtility::breakLinesForEmail($str, $implChar, $charWidth);

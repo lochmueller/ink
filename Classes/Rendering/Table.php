@@ -181,11 +181,11 @@ class Table extends AbstractRendering
      *
      * @return string
      */
-    function getTable($table)
+    public function getTable($table)
     {
         $lines = array();
-        $columnsHeaders = $this->columns_headers($table);
-        $columns_lengths = $this->columns_lengths($table, $columnsHeaders);
+        $columnsHeaders = $this->columnsHeaders($table);
+        $columns_lengths = $this->columnsLengths($table, $columnsHeaders);
 
         $topLine = $this->renderLine($columns_lengths, 'top', 'CharHeader');
         if ($topLine) {
@@ -264,7 +264,7 @@ class Table extends AbstractRendering
      *
      * @return string
      */
-    function renderCell($row_cells, $columns_headers, $columns_lengths)
+    public function renderCell($row_cells, $columns_headers, $columns_lengths)
     {
         $row = '';
         foreach ($columns_headers as $key => $header) {
@@ -290,7 +290,7 @@ class Table extends AbstractRendering
      *
      * @return array
      */
-    function columns_headers($table)
+    public function columnsHeaders($table)
     {
         return array_keys(reset($table));
     }
@@ -301,7 +301,7 @@ class Table extends AbstractRendering
      *
      * @return array
      */
-    function columns_lengths($table, $columns_headers)
+    public function columnsLengths($table, $columns_headers)
     {
         $lengths = array();
         foreach ($columns_headers as $header) {
