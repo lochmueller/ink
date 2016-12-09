@@ -38,7 +38,6 @@ class Image extends AbstractRendering
         $lines[] = $this->renderImagesHelper($images_arr, !$this->contentObject->data['image_zoom'] ? $this->contentObject->data['image_link'] : '', $this->contentObject->data['imagecaption']);
 
         return $lines;
-
     }
 
     /**

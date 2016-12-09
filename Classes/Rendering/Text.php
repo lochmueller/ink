@@ -23,6 +23,5 @@ class Text extends AbstractRendering
 
         $lines[] = trim($this->breakContent(strip_tags($this->parseBody($this->contentObject->data['bodytext']))), CRLF . TAB);
         return $lines;
-
     }
 }
