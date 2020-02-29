@@ -1,7 +1,6 @@
 {
   "name": "lochmueller/ink",
   "type": "typo3-cms-extension",
-  "version": "0.2.0",
   "description": "Build stable and flexible newsletter templates. Incl. also the plain text rendering for plain text e-Mails. Please contribute at https://github.com/lochmueller/ink",
   "autoload": {
     "psr-4": {
@@ -10,8 +9,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "FRUIT\\Ink\\Tests\\": "Tests",
-      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/"
+      "FRUIT\\Ink\\Tests\\": "Tests"
     }
   },
   "keywords": [
@@ -29,15 +27,14 @@
   ],
   "require": {
     "php": ">=5.5.0",
-    "typo3/cms-core": "~6.2.0||~7.6.0||~8.1.0||dev-master",
-    "typo3/cms": "^7.6.0"
+    "typo3/cms-core": "^7.6||^8.5",
+    "lochmueller/autoloader": "^3.0||^4.0||^5.0||^6.0"
   },
   "replace": {
-    "ink": "self.version",
     "typo3-ter/ink": "self.version"
   },
   "homepage": "https://github.com/lochmueller/ink",
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "support": {
     "issues": "https://github.com/lochmueller/ink/issues"
   },
